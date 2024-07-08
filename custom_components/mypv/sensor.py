@@ -57,8 +57,9 @@ class MypvDevice(CoordinatorEntity):
         try:
             state = self.coordinator.data[self._data_source][self.type]
             if self.type == "power_act":
-                relOut = int(self.coordinator.data[self._data_source]["rel1_out"])
-                loadNom = int(self.coordinator.data[self._data_source]["load_nom"])
+                if relOut is not None and loadNom is not None:
+                    relOut = int(self.coordinator.data[self._data_source]["rel1_out"])
+                    loadNom = int(self.coordinator.data[self._data_source]["load_nom"])
                 state = (relOut * loadNom) + int(state)
             self._last_value = state
         except Exception as ex:
