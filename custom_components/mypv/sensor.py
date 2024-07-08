@@ -71,7 +71,7 @@ class MypvDevice(CoordinatorEntity):
             return state / 1000
         if self._unit_of_measurement == UnitOfTemperature.CELSIUS:
             return state / 10
-        if self._unit_of_measurement == UnitOfElectricCurrent.AMPERE_AMPERE:
+        if self._unit_of_measurement == UnitOfElectricCurrent.AMPERE:
             return state / 10
         return state
 
