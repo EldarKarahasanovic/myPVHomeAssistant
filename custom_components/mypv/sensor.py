@@ -4,9 +4,9 @@ import logging
 from homeassistant.const import CONF_MONITORED_CONDITIONS
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
-    ELECTRIC_CURRENT_AMPERE,
-    FREQUENCY_HERTZ,
-    TEMP_CELSIUS,
+    UnitOfElectricCurrent,
+    UnitOfFrequency,
+    UnitOfTemperature,
 )
 
 from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR
@@ -67,11 +67,11 @@ class MypvDevice(CoordinatorEntity):
             state = self._last_value
         if state is None:
             return state
-        if self._unit_of_measurement == FREQUENCY_HERTZ:
+        if self._unit_of_measurement == UnitOfFrequency.HERTZ:
             return state / 1000
-        if self._unit_of_measurement == TEMP_CELSIUS:
+        if self._unit_of_measurement == UnitOfTemperature.CELSIUS:
             return state / 10
-        if self._unit_of_measurement == ELECTRIC_CURRENT_AMPERE:
+        if self._unit_of_measurement == UnitOfElectricCurrent.AMPERE_AMPERE:
             return state / 10
         return state
 
