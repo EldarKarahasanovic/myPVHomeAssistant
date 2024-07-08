@@ -10,7 +10,7 @@ from homeassistant.const import (
 import homeassistant.helpers.config_validation as cv
 
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN, SENSOR_TYPES, DATA_COORDINATOR
 from .coordinator import MYPVDataUpdateCoordinator
@@ -46,7 +46,7 @@ async def async_setup(hass, config):
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Load the saved entities."""
     coordinator = MYPVDataUpdateCoordinator(
         hass,
