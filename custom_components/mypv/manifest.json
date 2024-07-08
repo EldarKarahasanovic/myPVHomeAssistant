@@ -1,0 +1,11 @@
+{
+  "domain": "mypv",
+  "version": "0.2.0",
+  "name": "MyPV AC-THOR and ELWA",
+  "documentation": "https://github.com/zaubererty/homeassistant-mvpv",
+  "config_flow": true,
+  "dependencies": [],
+  "codeowners": ["@zaubererty", "@techolutions"],
+  "requirements": [],
+  "iot_class": "local_polling"
+}
