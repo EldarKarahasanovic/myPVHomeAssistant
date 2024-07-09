@@ -93,10 +93,9 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             [] if self._async_current_entries() else DEFAULT_MONITORED_CONDITIONS
         )
 
-        device_options = {device['address']: device['name'] for device in self._discovered_devices}
         setup_schema = vol.Schema(
             {
-                vol.Required(CONF_HOST, default=user_input[CONF_HOST]): vol.In(device_options),
+                vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
                 vol.Required(
                     CONF_MONITORED_CONDITIONS, default=default_monitored_conditions
                 ): cv.multi_select(SUPPORTED_SENSOR_TYPES),
