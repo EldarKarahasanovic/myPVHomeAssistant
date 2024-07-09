@@ -47,7 +47,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Initialize the config flow."""
         self._errors = {}
         self._info = {}
-        self._discovered_devices = discover_devices()
 
     def _host_in_configuration_exists(self, host) -> bool:
         """Return True if site_id exists in configuration."""
@@ -68,8 +67,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        self._discovered_devices = discover_devices()
-
         if user_input is not None:
             if self._host_in_configuration_exists(user_input[CONF_HOST]):
                 self._errors[CONF_HOST] = "host_exists"
