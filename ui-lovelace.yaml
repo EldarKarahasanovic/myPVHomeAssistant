@@ -25,6 +25,6 @@ views:
             show_icon: true
             type: button
             tap_action:
-              action: toggle
+              action: toggle   
             entity: switch.ww1boost_switch
             icon: mdi:water-boiler-auto
