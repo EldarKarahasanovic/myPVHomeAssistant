@@ -21,7 +21,7 @@ from .const import DOMAIN, SENSOR_TYPES  # pylint:disable=unused-import
 SUPPORTED_SENSOR_TYPES = list(SENSOR_TYPES)
 
 DEFAULT_MONITORED_CONDITIONS = [
-    "power_solar_act",
+    "power1_solar",
     "temp1"
 ]
 
