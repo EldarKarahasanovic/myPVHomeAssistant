@@ -35,7 +35,7 @@ class BoostSwitch(SwitchEntity):
         self._is_on = True
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://{self._host}/data.jsn?devmode=1") as response:
-                if response != 200:
+                if response.status != 200:
                     _LOGGER.error(f"Failed to turn off the device: {self._name}")
 
         self.async_write_ha_state()
@@ -45,7 +45,7 @@ class BoostSwitch(SwitchEntity):
         self._is_on = False
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://{self._host}/data.jsn?devmode=0") as response:
-                if response != 200:
+                if response.status != 200:
                     _LOGGER.error(f"Failed to turn off the device: {self._name}")
 
         self.async_write_ha_state()
