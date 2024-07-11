@@ -19,6 +19,7 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
 # 2. Spalte Einheit
 # 3. Spalte Icon
 # 4. Spalte Datenquelle
+
 SENSOR_TYPES = {
     "device": ["Device", None, "", "data"],
     "acthor9s": ["Acthor 9s", None, "", "data"],
