@@ -20,7 +20,7 @@ class BoostSwitch(SwitchEntity):
     def __init__(self, host):
         """Initialize the switch"""
         self._name = "Toggle switch"
-        self._is_on = None
+        self._is_on = True
         self._host = host
     
     @property
