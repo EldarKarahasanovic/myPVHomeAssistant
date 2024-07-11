@@ -1,6 +1,6 @@
 # homeassistant-mypv
 
-Home Assistant Component for AC-Thor of MyPV
+Home Assistant Component for AC•THOR of my-PV
 
 <a href="https://www.buymeacoffee.com/zauberertz" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee"></a>
 
@@ -19,11 +19,17 @@ The integration is configurated via UI
 
 BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 
-### Todo:
+### 1-TODO:
 - [x] Monitorig of all status values
 - [ ] Complete services
 - [ ] clean up code
-- [ ] Test other devices (ELWA, AC-Thor 9, etc.)
+- [ ] Test other devices (ELWA, AC•THOR 9s, etc.)
 - [ ] Add Icons
+
+### 2-IN PROGRESS:
+- 
+
+### 3-DONE:
+- 
 
 
