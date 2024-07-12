@@ -19,8 +19,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class BoostSwitch(SwitchEntity):
     def __init__(self, host):
         """Initialize the switch"""
-        self._name = "ww1boost switch"
-        self._is_on = False
+        self._name = "Toggle switch"
+        self._is_on = True
         self._host = host
     
     @property
