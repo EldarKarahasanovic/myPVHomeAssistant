@@ -24,12 +24,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([BoostSwitch(host, coordinator)], True)
     return True
 
-class BoostSwitch(SwitchEntity, CoordinatorEntity):
+def switch_state_update(coordinator):
+    switchState = coordinator.data["setup"]["devmode"]
+    return switchState == 1
+
+class BoostSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, host, coordinator):
         """Initialize the switch"""
         super().__init__(coordinator)
         self._name = "Toggle switch"
         self._host = host
+        self._is_on = switch_state_update(self.coordinator)
     
     @property
     def is_on(self):
@@ -61,8 +66,5 @@ class BoostSwitch(SwitchEntity, CoordinatorEntity):
     
     async def async_update(self) -> None:
         await super().async_update()
-        switchState = self.coordinator.data["setup"]["devmode"]
-        if switchState == 1:
-            self._is_on = True
-        else:
-            self._is_on = False
+        self._is_on = switch_state_update(self.coordinator)
+        self.async_write_ha_state()
