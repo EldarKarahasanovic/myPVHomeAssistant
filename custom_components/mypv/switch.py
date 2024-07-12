@@ -22,11 +22,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         DATA_COORDINATOR
     ]
     async_add_entities([BoostSwitch(host, coordinator)], True)
-    return True
-
-def switch_state_update(coordinator):
-    switchState = coordinator.data["setup"]["devmode"]
-    return switchState == 1
 
 class BoostSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, host, coordinator):
@@ -34,7 +29,7 @@ class BoostSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self._name = "Toggle switch"
         self._host = host
-        self._is_on = switch_state_update(self.coordinator)
+        self._is_on = self.switch_state_update()
     
     @property
     def is_on(self):
@@ -45,26 +40,27 @@ class BoostSwitch(CoordinatorEntity, SwitchEntity):
         return self._name
     
     async def async_turn_on(self):
-        self._is_on = True
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://{self._host}/data.jsn?devmode=1") as response:
-                if response.status != 200:
-                    _LOGGER.error(f"Failed to turn on the device: {self._name}")
+        await self.switch_state_update(1)
         await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
 
     
     async def async_turn_off(self):
-        self._is_on = False
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://{self._host}/data.jsn?devmode=0") as response:
-                if response.status != 200:
-                    _LOGGER.error(f"Failed to turn off the device: {self._name}")
-
+        await self.async_toggle_switch(0)
         await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
     
+    async def async_toggle_switch(self, mode):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://{self._host}/data.jsn?devmode={mode}") as response:
+                if response.status != 200:
+                    _LOGGER.error(f"Failed to turn on/off the device {self._entity_id}")
+    
+    def switch_state_update(self):
+        switchState = self.coordinator.data["setup"]["devmode"]
+        return switchState == 1
+    
     async def async_update(self) -> None:
         await super().async_update()
-        self._is_on = switch_state_update(self.coordinator)
+        self._is_on = self.switch_state_update()
         self.async_write_ha_state()
