@@ -32,7 +32,7 @@ class BoostSwitch(SwitchEntity):
     
     async def async_turn_on(self):
         self._is_on = True
-        await self.switch_state_update(1)
+        await self.async_toggle_switch(1)
         self.async_write_ha_state()
 
     async def async_turn_off(self):
