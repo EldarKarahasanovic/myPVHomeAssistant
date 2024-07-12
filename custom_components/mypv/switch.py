@@ -26,7 +26,7 @@ class BoostSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, host, coordinator):
         """Initialize the switch"""
         super().__init__(coordinator)
-        self._name = "Toggle switch"
+        self._name = "Device state"
         self._host = host
         self.coordinator = coordinator
         self._is_on = self.coordinator.data["setup"]["devmode"] == 1
@@ -58,7 +58,7 @@ class BoostSwitch(CoordinatorEntity, SwitchEntity):
     async def async_update(self):
         """Update the state of the switch based on the coordinator data."""
         await self.coordinator.async_request_refresh()
-        self._is_on = self.coordinator.data["setup"]["devmmode"] == 1
+        self._is_on = self.coordinator.data["setup"]["devmode"] == 1
         self.async_write_ha_state()
 
     async def async_added_to_hass(self):
