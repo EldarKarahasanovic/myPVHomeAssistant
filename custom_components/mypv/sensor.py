@@ -1,4 +1,4 @@
-"""The MYPV integration."""
+"""The my-PV integration."""
 
 import logging
 from homeassistant.const import CONF_MONITORED_CONDITIONS
@@ -16,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Add an MYPV entry."""
+    """Add an my-PV entry."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
         DATA_COORDINATOR
     ]
@@ -29,7 +29,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class MypvDevice(CoordinatorEntity):
-    """Representation of a MYPV device."""
+    """Representation of a my-PV device."""
 
     def __init__(self, coordinator, sensor_type, name):
         """Initialize the sensor."""
@@ -96,6 +96,6 @@ class MypvDevice(CoordinatorEntity):
         return {
             "identifiers": {(DOMAIN, self.serial_number)},
             "name": self._name,
-            "manufacturer": "MYPV",
+            "manufacturer": "my-PV",
             "model": self.model,
         }
