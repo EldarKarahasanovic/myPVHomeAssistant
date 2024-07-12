@@ -3,7 +3,6 @@
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import CONF_HOST
 
 import logging
@@ -16,7 +15,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     host = entry.data[CONF_HOST]
     async_add_entities([BoostSwitch(host)], True)
 
-class BoostSwitch(CoordinatorEntity, SwitchEntity):
+class BoostSwitch(SwitchEntity):
     def __init__(self, host):
         """Initialize the switch"""
         self._name = "Toggle switch"
@@ -34,13 +33,11 @@ class BoostSwitch(CoordinatorEntity, SwitchEntity):
     async def async_turn_on(self):
         self._is_on = True
         await self.switch_state_update(1)
-        await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
 
     async def async_turn_off(self):
         self._is_on = False
         await self.async_toggle_switch(0)
-        await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
     
     async def async_toggle_switch(self, mode):
