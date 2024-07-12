@@ -25,6 +25,7 @@ class BoostSwitch(SwitchEntity):
     
     @property
     def is_on(self):
+        _LOGGER.warning("Zustand Switch wird abgefragt")
         return self._is_on
 
     @property
