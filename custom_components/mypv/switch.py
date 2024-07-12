@@ -33,14 +33,13 @@ class BoostSwitch(SwitchEntity, CoordinatorEntity):
     
     @property
     def is_on(self):
-        deviceState = self.coordinator.data["setup"]["devmode"]
-        return deviceState == 1
+        return self._is_on
 
     @property
     def name(self):
         return self._name
     
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self):
         self._is_on = True
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://{self._host}/data.jsn?devmode=1") as response:
@@ -50,7 +49,7 @@ class BoostSwitch(SwitchEntity, CoordinatorEntity):
         self.async_write_ha_state()
 
     
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self):
         self._is_on = False
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://{self._host}/data.jsn?devmode=0") as response:
@@ -59,4 +58,11 @@ class BoostSwitch(SwitchEntity, CoordinatorEntity):
 
         await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
-
+    
+    async def async_update(self) -> None:
+        await super().async_update()
+        switchState = self.coordinator.data["setup"]["devmode"]
+        if switchState == 1:
+            self._is_on = True
+        else:
+            self._is_on = False
