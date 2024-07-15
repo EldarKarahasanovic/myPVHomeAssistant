@@ -19,7 +19,6 @@ from .const import DOMAIN, SENSOR_TYPES  # pylint:disable=unused-import
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_MONITORED_CONDITIONS = [
-    "power1_solar",
     "temp1"
 ]
 
