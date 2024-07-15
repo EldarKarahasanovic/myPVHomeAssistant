@@ -24,14 +24,19 @@ The integration is configurated via UI
 BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 
 ### 1-TODO:
-- [x] Monitorig of all status values
-- [ ] Complete services
-- [ ] clean up code
-- [ ] Test other devices (ELWA, AC•THOR 9s, etc.)
-- [ ] Add Icons
+- Complete services
+- clean up code
+- Test other devices (ELWA, AC•THOR 9s, etc.)
+- Autodiscovery
 
 ### 2-IN PROGRESS:
-- 
+-  Implementing hot water assurance
+-  Implementing a standard dashboard
 
 ### 3-DONE:
-- 
+- Monitoring of all status values
+- Fixed https:// github.com/zaubererty/homeassistant-mvpv/issues/7 (deprecated constants)
+- Added icons
+- Added button for warm water boost
+- Added switch for devmode
+- Filtering sensors based on device type
