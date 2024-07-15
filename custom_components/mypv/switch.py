@@ -11,11 +11,11 @@ import aiohttp
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    """Set up the SwitchBoost switch."""
+    """Set up the toggle switch."""
     host = entry.data[CONF_HOST]
-    async_add_entities([BoostSwitch(host)], True)
+    async_add_entities([ToggleSwitch(host)], True)
 
-class BoostSwitch(SwitchEntity):
+class ToggleSwitch(SwitchEntity):
     def __init__(self, host):
         """Initialize the switch"""
         self._name = "Device state"

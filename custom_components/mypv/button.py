@@ -18,7 +18,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class BoostButton(ButtonEntity):
     def __init__(self, host) -> None:
         """Initialize the button"""
-        self._icon = ""
+        self._icon = "mdi:heat-wave"
         self._name = "Boost button"
         self._host = host
 
@@ -35,10 +35,10 @@ class BoostButton(ButtonEntity):
             async with session.get(f"http://{self._host}/data.jsn") as response:
                 if response.status == 200:
                     data = await response.json()
-                    boostActive = data.get("bststrt")
+                    boostActive = data.get("boostactive")
                     newBoost = not boostActive
                     async with session.get(f"http://{self._host}/data.jsn?bststrt={int(newBoost)}") as response2:
                         if response2.status != 200:
                             _LOGGER.error("Failed to (de-)activate boost")
                 else:
-                    _LOGGER.error("Faile to (de-)activate boost")
+                    _LOGGER.error("Failed to (de-)activate boost")
