@@ -56,7 +56,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 timeout = ClientTimeout(total=5)
                 async with session.get(f"http://{host}/data.jsn", timeout=timeout) as response:
                     if response.status == 200:
-                        data = response.json()
+                        data = await response.json()
                         json_keys = set(data.keys())
                         self._filtered_sensor_types = {}
 
@@ -66,6 +66,9 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         
                         if not self._filtered_sensor_types:
                             _LOGGER.warning("No matching sensors found on the device.")
+                    else:
+                        self._filtered_sensor_types = {}
+                        _LOGGER.error(f"Can't connect to {host}: Bad HTTP Request status")
 
             except aiohttp.ClientError as e:
                 _LOGGER.error(f"Failed to connect to {host}: {e}")
