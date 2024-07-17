@@ -44,7 +44,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._host = None
         self._filtered_sensor_types = {}
         self._devices = {}
-        self._config_method = None
 
     def _host_in_configuration_exists(self, host) -> bool:
         """Return True if host exists in configuration."""
@@ -106,7 +105,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._errors[CONF_HOST] = "invalid_ip"
 
         user_input = user_input or {CONF_HOST: "192.168.0.0"}
-        self._config_method = "ip_known"
 
         ip_known_schema = vol.Schema(
             {vol.Required(CONF_HOST, default="192.168.0.0"): str}
@@ -130,8 +128,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 errors["base"] = "invalid_subnet"
             
-        self._config_method = "ip_unknown"
-
         ip_unknown_schema = vol.Schema(
             {vol.Required("subnet", default="192.168.0"): str}
         )
@@ -210,9 +206,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
-        if user_input is not None:
-            if self._config_method is "ip_known":
-                
+        if user_input is not None:                
             return self.async_create_entry(
                 title=f"{self._devices[self._host]}",
                 data={
