@@ -208,6 +208,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 },
             )
 
+        if not self._filtered_sensor_types:
+            self._errors["base"] = "no_sensors_found"
+            return await self.async_step_ip_known()
+        
         default_monitored_conditions = (
             [] if self._async_current_entries() else DEFAULT_MONITORED_CONDITIONS
         )
