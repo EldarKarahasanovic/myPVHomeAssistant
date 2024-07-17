@@ -6,7 +6,7 @@ import ipaddress
 import aiohttp
 import asyncio
 from requests.exceptions import RequestException
-from asyncio import ClientTimeout
+from aiohttp import ClientTimeout
 
 from homeassistant import config_entries
 import homeassistant.helpers.config_validation as cv
