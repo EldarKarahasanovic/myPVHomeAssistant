@@ -121,10 +121,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     
     async def async_step_ip_known(self, user_input=None):
         if user_input is not None:
-            host = user_input[CONF_HOST]
-            if self.is_valid_ip(host):
-                if await self.check_ip_device(host):
-                    if not self._host_in_configuration_exists(host):
+            self._host = user_input[CONF_HOST]
+            if self.is_valid_ip(self._host):
+                if await self.check_ip_device(self._host):
+                    if not self._host_in_configuration_exists(self._host):
                         await self.hass.async_add_executor_job(self._get_sensor, self._host)
                         return await self.async_step_sensors()
                     else:
