@@ -238,7 +238,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the sensor selection step."""
         if user_input is not None:
             return self.async_create_entry(
-                title=f"{self._info['device']} - {self._info['number']}",
+                title=f"{self._devices[self._host]}",
                 data={
                     CONF_HOST: self._host,
                     CONF_MONITORED_CONDITIONS: user_input[CONF_MONITORED_CONDITIONS],
