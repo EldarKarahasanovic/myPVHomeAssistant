@@ -49,24 +49,30 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Return True if host exists in configuration."""
         return host in mypv_entries(self.hass)
 
-    def _get_sensor(self, host):
+    async def _get_sensor(self, host):
         """Fetch sensor data and update _filtered_sensor_types."""
-        try:
-            response = requests.get(f"http://{host}/data.jsn", timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            json_keys = set(data.keys())
-            self._filtered_sensor_types = {}
+        async with aiohttp.ClientSession() as session:
+            try:
+                timeout = ClientTimeout(total=5)
+                async with session.get(f"http://{host}/data.jsn", timeout=timeout) as response:
+                    if response.status == 200:
+                        data = response.json()
+                        json_keys = set(data.keys())
+                        self._filtered_sensor_types = {}
 
-            for key, value in SENSOR_TYPES.items():
-                if key in json_keys:
-                    self._filtered_sensor_types[key] = value[0]
+                        for key, value in SENSOR_TYPES.items():
+                            if key in json_keys:
+                                self._filtered_sensor_types[key] = value[0]
+                        
+                        if not self._filtered_sensor_types:
+                            _LOGGER.warning("No matching sensors found on the device.")
 
-            if not self._filtered_sensor_types:
-                _LOGGER.warning("No matching sensors found on the device.")
-        except RequestException as e:
-            _LOGGER.error(f"Error fetching sensor data: {e}")
-            self._filtered_sensor_types = {}
+            except aiohttp.ClientError as e:
+                _LOGGER.error(f"Failed to connect to {host}: {e}")
+                self._filtered_sensor_types = {}
+            except asyncio.TimeoutError as e:
+                _LOGGER.error(f"Timeout error occured on {host}: {e}")
+                self._filtered_sensor_types = {}
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
@@ -84,7 +90,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if self.is_valid_ip(self._host):
                 if await self.check_ip_device(self._host):
                     if not self._host_in_configuration_exists(self._host):
-                        await self.hass.async_add_executor_job(self._get_sensor, self._host)
+                        await self._get_sensor(self._host)
                         return await self.async_step_sensors()
                     else:
                         self._errors[CONF_HOST] = "host_already_configured"
@@ -130,7 +136,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_select_device(self, user_input=None):
         if user_input is not None:
             self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
-            await self.hass.async_add_executor_job(self._get_sensor, self._host)
+            await self._get_sensor(self._host)
             return await self.async_step_sensors()        
         
         select_device_schema = vol.Schema({
@@ -196,10 +202,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
         if user_input is not None:
-            if self._host not in self._devices:
-                self._errors["base"] = "device_not_found"
-                return await self.async_step_select_device()
-
             return self.async_create_entry(
                 title=f"{self._devices[self._host]}",
                 data={
@@ -208,18 +210,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 },
             )
 
-        if not self._filtered_sensor_types:
-            self._errors["base"] = "no_sensors_found"
-            return await self.async_step_ip_known()
-        
-        default_monitored_conditions = (
-            [] if self._async_current_entries() else DEFAULT_MONITORED_CONDITIONS
-        )
-
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default=default_monitored_conditions
+                    CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED_CONDITIONS
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
@@ -235,5 +229,5 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._host = user_input[CONF_HOST]
         if not await self.check_ip_device(self._host):
             return self.async_abort(reason="invalid_ip_address")
-        await self.hass.async_add_executor_job(self._get_sensor, self._host)
+        await self._get_sensor(self._host)
         return await self.async_step_sensors(user_input)
