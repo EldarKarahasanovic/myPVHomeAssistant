@@ -1,4 +1,3 @@
-"""Config flow for Kostal piko integration."""
 import logging
 import voluptuous as vol
 import requests
@@ -27,19 +26,19 @@ DEFAULT_MONITORED_CONDITIONS = [
 
 @callback
 def mypv_entries(hass: HomeAssistant):
-    """Return the hosts for the domain."""
+    """Returns the hosts for the domain."""
     return set(
         (entry.data[CONF_HOST]) for entry in hass.config_entries.async_entries(DOMAIN)
     )
 
 class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Mypv config flow."""
+    """Mypv Config Flow."""
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     def __init__(self) -> None:
-        """Initialize the config flow."""
+        """Initialize config flow"""
         self._errors = {}
         self._info = {}
         self._host = None
@@ -47,27 +46,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._devices = {}
 
     def _host_in_configuration_exists(self, host) -> bool:
-        """Return True if site_id exists in configuration."""
+        """Returns True if the site_id exists in the configuration."""
         return host in mypv_entries(self.hass)
-    """
-    def _check_host(self, host) -> bool:
-        Check if we can connect to the mypv.
-        try:
-            response = requests.get(f"http://{host}/mypv_dev.jsn", timeout=10)
-            response.raise_for_status()
-            self._info = response.json()
-        except (ConnectTimeout, HTTPError) as e:
-            self._errors[CONF_HOST] = "could_not_connect"
-            _LOGGER.error(f"Connection error: {e}")
-            return False
-        except RequestException as e:
-            self._errors[CONF_HOST] = "unexpected_error"
-            _LOGGER.error(f"Unexpected error: {e}")
-            return False
-        return True
-    """
+
     def _get_sensor(self, host):
-        """Fetch sensor data and update _filtered_sensor_types."""
+        """Gets sensor data and updates _filtered_sensor_types."""
         try:
             response = requests.get(f"http://{host}/data.jsn", timeout=10)
             response.raise_for_status()
@@ -77,40 +60,16 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             for key, value in SENSOR_TYPES.items():
                 if key in json_keys:
-                    self._filtered_sensor_types[key] = value[0]  #damit nur das erste element genutzt wird
+                    self._filtered_sensor_types[key] = value[0]
 
             if not self._filtered_sensor_types:
                 _LOGGER.warning("No matching sensors found on the device.")
         except RequestException as e:
-            _LOGGER.error(f"Error fetching sensor data: {e}")
+            _LOGGER.error(f"Error retrieving sensor data: {e}")
             self._filtered_sensor_types = {}
-    """
-    async def async_step_user(self, user_input=None):
-            Handle the initial step.
-        if user_input is not None:
-            self._host = user_input[CONF_HOST]
-            if self._host_in_configuration_exists(self._host):
-                self._errors[CONF_HOST] = "host_exists"
-            else:
-                can_connect = await self.hass.async_add_executor_job(
-                    self._check_host, self._host
-                )
-                if (can_connect):
-                    await self.hass.async_add_executor_job(self._get_sensor, self._host)
-                    return await self.async_step_sensors()
-        
-        user_input = user_input or {CONF_HOST: "192.168.0.0"}
 
-        setup_schema = vol.Schema(
-            {vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str}
-        )
-
-        return self.async_show_form(
-            step_id="user", data_schema=setup_schema, errors=self._errors
-        )
-"""
     async def async_step_user(self, user_input=None):
-        """Handle the initial step."""
+        """Handles the initial step"""
         return self.async_show_menu(
             step_id="user",
             menu_options={
@@ -137,7 +96,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         user_input = user_input or {CONF_HOST: "192.168.0.0"}
 
         ip_known_schema = vol.Schema(
-            {vol.Required(CONF_HOST, default="192.168.0.0"):str}
+            {vol.Required(CONF_HOST, default="192.168.0.0"): str}
         )
         return self.async_show_form(
             step_id="ip_known",
@@ -151,7 +110,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             subnet = user_input["subnet"]
             if self.is_valid_subnet(subnet):
                 self._devices = await self.scan_devices(subnet)
-                if self._devices:    
+                if self._devices:
                     return await self.async_step_select_device()
                 else:
                     errors["base"] = "no_devices_found"
@@ -159,7 +118,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_subnet"
             
         ip_unknown_schema = vol.Schema(
-            {vol.Required("subnet", default="192.168.0"):str}
+            {vol.Required("subnet", default="192.168.0"): str}
         )
 
         return self.async_show_form(
@@ -175,8 +134,8 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return await self.async_step_sensors()        
         
         select_device_schema = vol.Schema({
-                vol.Required("device"): vol.In(list(self._devices.values()))
-            })
+            vol.Required("device"): vol.In(list(self._devices.values()))
+        })
         
         return self.async_show_form(
             step_id="select_device",
@@ -189,7 +148,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ipaddress.ip_address(ip)
             return True
         except ValueError:
-            _LOGGER.error("You entered an invalid IP")
+            _LOGGER.error("Entered invalid IP address")
             return False
     
     def is_valid_subnet(self, subnet):
@@ -215,7 +174,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             results = await asyncio.gather(*tasks)
 
             for ip, device_name in zip([f"{subnet}.{i}" for i in range(1, 255)], results):
-                if (device_name is not None) and (not self._host_in_configuration_exists(ip)):
+                if device_name is not None and not self._host_in_configuration_exists(ip):
                     devices[ip] = f"{device_name} {ip}"
 
         return devices
@@ -229,14 +188,18 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return data.get("device")
                 else:
                     return None
-        except aiohttp.ClientError as e:
+        except aiohttp.ClientError:
             return None
-        except asyncio.TimeoutError as e:
+        except asyncio.TimeoutError:
             return None
 
     async def async_step_sensors(self, user_input=None):
-        """Handle the sensor selection step."""
+        """Handles the step_sensors step"""
         if user_input is not None:
+            if self._host not in self._devices:
+                self._errors["base"] = "device_not_found"
+                return await self.async_step_select_device()
+
             return self.async_create_entry(
                 title=f"{self._devices[self._host]}",
                 data={
@@ -262,7 +225,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_import(self, user_input=None):
-        """Import a config entry."""
+        """Import a config entry"""
         if self._host_in_configuration_exists(user_input[CONF_HOST]):
             return self.async_abort(reason="host_exists")
         self._host = user_input[CONF_HOST]
