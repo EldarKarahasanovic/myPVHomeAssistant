@@ -26,19 +26,19 @@ DEFAULT_MONITORED_CONDITIONS = [
 
 @callback
 def mypv_entries(hass: HomeAssistant):
-    """Returns the hosts for the domain."""
+    """Return the hosts for the domain."""
     return set(
         (entry.data[CONF_HOST]) for entry in hass.config_entries.async_entries(DOMAIN)
     )
 
 class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Mypv Config Flow."""
+    """Mypv config flow."""
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     def __init__(self) -> None:
-        """Initialize config flow"""
+        """Initialize the config flow."""
         self._errors = {}
         self._info = {}
         self._host = None
@@ -46,11 +46,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._devices = {}
 
     def _host_in_configuration_exists(self, host) -> bool:
-        """Returns True if the site_id exists in the configuration."""
+        """Return True if host exists in configuration."""
         return host in mypv_entries(self.hass)
 
     def _get_sensor(self, host):
-        """Gets sensor data and updates _filtered_sensor_types."""
+        """Fetch sensor data and update _filtered_sensor_types."""
         try:
             response = requests.get(f"http://{host}/data.jsn", timeout=10)
             response.raise_for_status()
@@ -65,11 +65,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not self._filtered_sensor_types:
                 _LOGGER.warning("No matching sensors found on the device.")
         except RequestException as e:
-            _LOGGER.error(f"Error retrieving sensor data: {e}")
+            _LOGGER.error(f"Error fetching sensor data: {e}")
             self._filtered_sensor_types = {}
 
     async def async_step_user(self, user_input=None):
-        """Handles the initial step"""
+        """Handle the initial step."""
         return self.async_show_menu(
             step_id="user",
             menu_options={
@@ -129,7 +129,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     
     async def async_step_select_device(self, user_input=None):
         if user_input is not None:
-            self._host = user_input["device"]
+            self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
             await self.hass.async_add_executor_job(self._get_sensor, self._host)
             return await self.async_step_sensors()        
         
@@ -148,7 +148,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ipaddress.ip_address(ip)
             return True
         except ValueError:
-            _LOGGER.error("Entered invalid IP address")
+            _LOGGER.error("Invalid IP entered")
             return False
     
     def is_valid_subnet(self, subnet):
@@ -175,7 +175,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             for ip, device_name in zip([f"{subnet}.{i}" for i in range(1, 255)], results):
                 if device_name is not None and not self._host_in_configuration_exists(ip):
-                    devices[ip] = f"{device_name} {ip}"
+                    devices[ip] = f"{device_name} ({ip})"
 
         return devices
     
@@ -194,7 +194,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return None
 
     async def async_step_sensors(self, user_input=None):
-        """Handles the step_sensors step"""
+        """Handle the sensor selection step."""
         if user_input is not None:
             if self._host not in self._devices:
                 self._errors["base"] = "device_not_found"
@@ -225,10 +225,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_import(self, user_input=None):
-        """Import a config entry"""
+        """Import a config entry."""
         if self._host_in_configuration_exists(user_input[CONF_HOST]):
             return self.async_abort(reason="host_exists")
         self._host = user_input[CONF_HOST]
-        await self.hass.async_add_executor_job(self._check_host, self._host)
+        if not await self.check_ip_device(self._host):
+            return self.async_abort(reason="invalid_ip_address")
         await self.hass.async_add_executor_job(self._get_sensor, self._host)
         return await self.async_step_sensors(user_input)
