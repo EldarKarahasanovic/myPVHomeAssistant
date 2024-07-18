@@ -7,7 +7,9 @@
         }
       },
       "ip_known": {
-        "host": "The IP address of your my-PV device"
+        "data": {
+          "host": "The IP address of your my-PV device"
+        }
       },
       "ip_unknown": {
         "subnet": "Enter your subnet"
