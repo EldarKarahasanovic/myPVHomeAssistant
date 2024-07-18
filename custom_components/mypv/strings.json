@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "data": {
-          "host": "The IP address of your my-PV device"
+          "host": "The IP address of your my-PV device1"
         }
       },
       "ip_known": {
