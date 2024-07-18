@@ -3,6 +3,7 @@ import voluptuous as vol
 import ipaddress
 import aiohttp
 import asyncio
+import socket
 from aiohttp import ClientTimeout
 
 from homeassistant import config_entries
@@ -42,6 +43,8 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._host = None
         self._filtered_sensor_types = {}
         self._devices = {}
+        self._ip = self.get_own_ip()
+        _LOGGER.error(f"Your IP is: {self._ip}")
 
     def _host_in_configuration_exists(self, host) -> bool:
         """Return True if host exists in configuration."""
@@ -240,3 +243,15 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="invalid_ip_address")
         await self._get_sensor(self._host)
         return await self.async_step_sensors(user_input)
+    
+    async def get_own_ip():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = None
+            _LOGGER.error("Unable to get IP address")
+        finally:
+            s.close()
+        return ip

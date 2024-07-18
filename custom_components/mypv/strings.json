@@ -22,6 +22,8 @@
               }
           },
           "sensors": {
+              "title": "Select sensors",
+              "description": "Device connected successfully! Choose your sensors:",
               "data": {
                   "sensors": "Select your sensors"
               }
