@@ -6,10 +6,18 @@
           "host": "The IP address of your my-PV device"
         }
       },
-      "ip_known": "The IP address of your my-PV device",
-      "ip_unknown": "Enter your subnet",
-      "select_device": "Select your device",
-      "sensors": "Select your sensors"
+      "ip_known": {
+        "host": "The IP address of your my-PV device"
+      },
+      "ip_unknown": {
+        "subnet": "Enter your subnet"
+      },
+      "select_device": {
+        "device": "Select your device"
+      },
+      "sensors": {
+        "sensors": "Select your sensors"
+      }
     },
     "error": {
       "cannot_connect": "Could not connect to the device",
