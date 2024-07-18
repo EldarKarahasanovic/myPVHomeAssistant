@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "data": {
-          "host": "The IP address of your my-PV device"
+          "host": "The IP address of your my-PV device1"
         }
       },
       "ip_known": {
@@ -12,19 +12,27 @@
         }
       },
       "ip_unknown": {
-        "subnet": "Enter your subnet"
+        "data": {
+          "subnet": "Enter your subnet"
+        }
       },
       "select_device": {
-        "device": "Select your device"
+        "data": {
+          "device": "Select your device"
+        }
       },
       "sensors": {
-        "sensors": "Select your sensors"
+        "data": {
+          "sensors": "Select your sensors"
+        }
       }
     },
     "error": {
       "cannot_connect": "Could not connect to the device",
       "invalid_auth": "Invalid authentication credentials",
-      "unknown": "An unknown error occurred"
+      "unknown": "An unknown error occurred",
+      "no_devices_found": "No devices found in the subnet",
+      "invalid_subnet": "Invalid subnet"
     },
     "abort": {
       "already_configured": "Device is already configured"
