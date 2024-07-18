@@ -1,14 +1,9 @@
 {
   "config": {
       "step": {
-          "user": {
-              "data": {
-                  "host": "The IP address of your my-PV device12"
-              }
-          },
           "ip_known": {
               "data": {
-                  "host": "The IP address of your my-PV device1111"
+                  "host": "The IP address of your my-PV device"
               }
           },
           "ip_unknown": {
@@ -17,16 +12,12 @@
               }
           },
           "select_device": {
-              "data": {
-                  "device": "Select your device"
-              }
+              "title": "Select your device",
+              "description": "Those devices were found in your subnet:"
           },
           "sensors": {
               "title": "Select sensors",
-              "description": "Device connected successfully! Choose your sensors:",
-              "data": {
-                  "sensors": "Select your sensors"
-              }
+              "description": "Device connected successfully! Choose your sensors:"
           }
       },
       "error": {
