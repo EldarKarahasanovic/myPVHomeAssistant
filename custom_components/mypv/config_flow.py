@@ -133,7 +133,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="ip_unknown",
             data_schema=ip_unknown_schema,
-            errors=self._errors
+            errors=self._errors,
+            description_placeholders={
+                "subnet": "Enter your subnet"
+            }
         )  
     
     async def async_step_select_device(self, user_input=None):
