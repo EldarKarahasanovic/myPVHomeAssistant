@@ -12,13 +12,19 @@
         }
       },
       "ip_unknown": {
-        "subnet": "Enter your subnet"
+        "data": {
+          "subnet": "Enter your subnet"
+        }
       },
       "select_device": {
-        "device": "Select your device"
+        "data": {
+          "device": "Select your device"
+        }
       },
       "sensors": {
-        "sensors": "Select your sensors"
+        "data": {
+          "sensors": "Select your sensors"
+        }
       }
     },
     "error": {
