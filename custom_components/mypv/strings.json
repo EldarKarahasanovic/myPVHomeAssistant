@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "data": {
-          "host": "[%key:common::config_flow::data::host%]"
+          "host": "The IP address of your my-PV device"
         }
       }
     },
@@ -16,5 +16,9 @@
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
     }
-  }
+  },
+  "ip_known": "The IP address of your my-PV device",
+  "ip_unknown": "Enter your subnet",
+  "select_device": "Select your device",
+  "sensors": "Select your sensors"
 }
