@@ -1,4 +1,4 @@
-# homeassistant-mypv
+# my-PV Home Assistant Integration (BETA)
 
 Home Assistant Component for AC•THOR of my-PV
 
