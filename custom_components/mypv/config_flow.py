@@ -114,7 +114,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
     
     async def async_step_ip_unknown(self, user_input=None):
-        errors = {}
+        self._errors = {}
         if user_input is not None:
             subnet = user_input["subnet"]
             if self.is_valid_subnet(subnet):
@@ -122,9 +122,9 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if self._devices:
                     return await self.async_step_select_device()
                 else:
-                    errors["base"] = "no_devices_found"
+                    self._errors["base"] = "no_devices_found"
             else:
-                errors["base"] = "invalid_subnet"
+                self._errors["base"] = "invalid_subnet"
             
         ip_unknown_schema = vol.Schema(
             {vol.Required("subnet", default="192.168.0"): str}
@@ -133,10 +133,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="ip_unknown",
             data_schema=ip_unknown_schema,
-            errors=errors
+            errors=self._errors
         )  
     
     async def async_step_select_device(self, user_input=None):
+        self._errors = {}
         if user_input is not None:
             self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
             await self._get_sensor(self._host)
@@ -149,7 +150,8 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="select_device",
             data_schema=select_device_schema,
-            description_placeholders={"devices": ", ".join(self._devices.values())}
+            description_placeholders={"devices": ", ".join(self._devices.values())},
+            errors=self._errors
         )  
         
     def is_valid_ip(self, ip):
@@ -204,6 +206,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
+        self._errors = {}
         if user_input is not None:                
             return self.async_create_entry(
                 title=f"{self._devices[self._host]}",

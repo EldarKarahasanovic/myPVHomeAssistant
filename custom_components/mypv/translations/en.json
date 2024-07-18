@@ -30,7 +30,9 @@
     "error": {
       "cannot_connect": "Could not connect to the device",
       "invalid_auth": "Invalid authentication credentials",
-      "unknown": "An unknown error occurred"
+      "unknown": "An unknown error occurred",
+      "no_devices_found": "No devices found in the subnet",
+      "invalid_subnet": "Invalid subnet"
     },
     "abort": {
       "already_configured": "Device is already configured"
