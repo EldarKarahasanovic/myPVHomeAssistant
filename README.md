@@ -6,6 +6,8 @@ Home Assistant Component for AC•THOR of my-PV
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 
+This repo is actually forked from <a href="https://github.com/zaubererty/homeassistant-mvpv" target="_blank">@zaubererty> and implemented some commits from <a href="https://github.com/coccyx00/homeassistant-mvpv" target="_blank">@coccyx00>. We still improved this integration by adding more services, improved code and discovery. 
+
 ### Installation
 
 Copy this folder to `config/custom_components/mypv/`.

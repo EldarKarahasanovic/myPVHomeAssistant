@@ -1,10 +1,8 @@
 import logging
 import voluptuous as vol
-import requests
 import ipaddress
 import aiohttp
 import asyncio
-from requests.exceptions import RequestException
 from aiohttp import ClientTimeout
 
 from homeassistant import config_entries
