@@ -1,18 +1,24 @@
 {
+  "title": "my-PV",
   "config": {
-    "title": "MYPV",
     "step": {
       "user": {
         "data": {
-          "host": "The ip address of this my-PV device"
+          "host": "The IP address of your my-PV device"
         }
       }
     },
     "error": {
-      "host_exists": "This host is already configured"
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {
-      "host_exists": "This host is already configured"
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
     }
-  }
+  },
+  "ip_known": "The IP address of your my-PV device",
+  "ip_unknown": "Enter your subnet",
+  "select_device": "Select your device",
+  "sensors": "Select your sensors"
 }
