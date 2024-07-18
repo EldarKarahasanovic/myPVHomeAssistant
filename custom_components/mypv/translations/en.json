@@ -1,24 +1,23 @@
 {
-  "title": "my-PV",
   "config": {
     "step": {
       "user": {
         "data": {
           "host": "The IP address of your my-PV device"
         }
-      }
+      },
+      "ip_known": "The IP address of your my-PV device",
+      "ip_unknown": "Enter your subnet",
+      "select_device": "Select your device",
+      "sensors": "Select your sensors"
     },
     "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
+      "cannot_connect": "Could not connect to the device",
+      "invalid_auth": "Invalid authentication credentials",
+      "unknown": "An unknown error occurred"
     },
     "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+      "already_configured": "Device is already configured"
     }
-  },
-  "ip_known": "The IP address of your my-PV device",
-  "ip_unknown": "Enter your subnet",
-  "select_device": "Select your device",
-  "sensors": "Select your sensors"
+  }
 }
