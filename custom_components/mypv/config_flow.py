@@ -244,7 +244,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         await self._get_sensor(self._host)
         return await self.async_step_sensors(user_input)
     
-    async def get_own_ip():
+    def get_own_ip(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             s.connect(('8.8.8.8', 80))
