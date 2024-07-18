@@ -1,41 +1,41 @@
 {
   "config": {
-    "step": {
-      "user": {
-        "data": {
-          "host": "The IP address of your my-PV device1"
-        }
+      "step": {
+          "user": {
+              "data": {
+                  "host": "The IP address of your my-PV device"
+              }
+          },
+          "ip_known": {
+              "data": {
+                  "host": "The IP address of your my-PV device"
+              }
+          },
+          "ip_unknown": {
+              "data": {
+                  "subnet": "Enter your subnet"
+              }
+          },
+          "select_device": {
+              "data": {
+                  "device": "Select your device"
+              }
+          },
+          "sensors": {
+              "data": {
+                  "sensors": "Select your sensors"
+              }
+          }
       },
-      "ip_known": {
-        "data": {
-          "host": "The IP address of your my-PV device"
-        }
+      "error": {
+          "cannot_connect": "Could not connect to the device",
+          "invalid_auth": "Invalid authentication credentials",
+          "unknown": "An unknown error occurred",
+          "no_devices_found": "No devices found in the subnet",
+          "invalid_subnet": "Invalid subnet"
       },
-      "ip_unknown": {
-        "data": {
-          "subnet": "Enter your subnet"
-        }
-      },
-      "select_device": {
-        "data": {
-          "device": "Select your device"
-        }
-      },
-      "sensors": {
-        "data": {
-          "sensors": "Select your sensors"
-        }
+      "abort": {
+          "already_configured": "Device is already configured"
       }
-    },
-    "error": {
-      "cannot_connect": "Could not connect to the device",
-      "invalid_auth": "Invalid authentication credentials",
-      "unknown": "An unknown error occurred",
-      "no_devices_found": "No devices found in the subnet",
-      "invalid_subnet": "Invalid subnet"
-    },
-    "abort": {
-      "already_configured": "Device is already configured"
-    }
   }
 }
