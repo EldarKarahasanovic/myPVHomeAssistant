@@ -83,9 +83,9 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": translations["config.step.user.menu_options.ip_known"],
-                "ip_unknown": translations["config.step.user.menu_options.ip_unknown"],
-                "automatic_scan" : translations["config.step.user.menu_options.automatic_scan"]
+                "ip_known": translations.get("config.step.user.menu_options.ip_known"),
+                "ip_unknown": translations.get("config.step.user.menu_options.ip_unknown"),
+                "automatic_scan" : translations.get("config.step.user.menu_options.automatic_scan")
             },
         )  
     
