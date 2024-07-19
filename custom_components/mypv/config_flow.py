@@ -79,15 +79,23 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        translations = await self._get_translations()
+        # Get translations for the current language
+        translations = await self.async_get_translations()
+
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": translations.get("config.step.user.menu_options.ip_known"),
-                "ip_unknown": translations.get("config.step.user.menu_options.ip_unknown"),
-                "automatic_scan" : translations.get("config.step.user.menu_options.automatic_scan")
+                "ip_known": translations.get("config.step.user.menu_options.ip_known", "IP address"),
+                "ip_unknown": translations.get("config.step.user.menu_options.ip_unknown", "Subnet scan"),
+                "automatic_scan": translations.get("config.step.user.menu_options.automatic_scan", "Automatic scan for my-PV devices in your network")
             },
-        )  
+        )
+
+    async def async_get_translations(self):
+        """Fetch translations from the current language."""
+        hass = self.hass
+        translations = hass.data.get('translations', {}).get('my_pv', {})
+        return translations
     
     async def async_step_ip_known(self, user_input=None):
         if user_input is not None:
@@ -232,16 +240,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return None
         except asyncio.TimeoutError:
             return None
-        
-    async def _get_translations(self):
-        """Retrieve the translation based on the key."""
-        lang = self.hass.config.language
-        return await self.hass.async_add_executor_job(
-            translation.async_get_translations,
-            self.hass,
-            lang,
-            DOMAIN
-        )
 
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
