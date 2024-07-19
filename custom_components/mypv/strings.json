@@ -1,34 +1,39 @@
 {
-  "config": {
+    "title": "my-PV",
+    "config": {
       "step": {
-          "ip_known": {
-              "data": {
-                  "host": "The IP address of your my-PV device"
-              }
-          },
-          "ip_unknown": {
-              "data": {
-                  "subnet": "Enter your subnet"
-              }
-          },
-          "select_device": {
-              "title": "Select your device",
-              "description": "Those devices were found in your subnet:"
-          },
-          "sensors": {
-              "title": "Select sensors",
-              "description": "Device connected successfully! Choose your sensors:"
+        "user": {
+            "title": "Connection method of your my-PV device"
+        },
+        "ip_known": {
+          "data": {
+            "host": "[%key:common::config_flow::data::host%]"
           }
+        },
+        "ip_unknown": {
+          "data": {
+            "subnet": "Enter your subnet"
+          }
+        },
+        "select_device": {
+          "title": "Select your device",
+          "description": "Those devices were found in your subnet:"
+        },
+        "sensors": {
+          "title": "Select your sensors",
+          "description": "Device connected successfully! Choose your sensors:"
+        }
       },
       "error": {
-          "cannot_connect": "Could not connect to the device",
-          "invalid_auth": "Invalid authentication credentials",
-          "unknown": "An unknown error occurred",
-          "no_devices_found": "No devices found in the subnet",
-          "invalid_subnet": "Invalid subnet"
+        "could_not_connect": "[%key:common::config_flow::error::cannot_connect%]",
+        "host_already_configured": "[%key:common::config_flow::error::already_configured%]",
+        "no_devices_found": "No devices found in your subnet",
+        "invalid_subnet": "Invalid subnet"
       },
       "abort": {
-          "already_configured": "Device is already configured"
+        "host_exists": "[%key:common::config_flow::abort::already_configured_device%]",
+        "invalid_ip_address": "[%key:common::config_flow::abort::invalid_ip_address%]",
+        "no_devices_found": "No devices found in your subnet"
       }
+    }
   }
-}

@@ -177,6 +177,25 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return False
         ip = subnet + ".0"
         return self.is_valid_ip(ip)
+    
+    def get_own_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = None
+            _LOGGER.error("Unable to get IP address")
+        finally:
+            s.close()
+        return ip
+    
+    def get_subnet(self, ip):
+        if self.is_valid_ip(ip):
+            octets = ip.split('.')
+            subnet = f"{octets[0]}.{octets[1]}.{octets[2]}"
+            return subnet
+        return None
         
     async def check_ip_device(self, ip):
         async with aiohttp.ClientSession() as session:
@@ -245,22 +264,3 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="invalid_ip_address")
         await self._get_sensor(self._host)
         return await self.async_step_sensors(user_input)
-    
-    def get_own_ip(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            s.connect(('8.8.8.8', 80))
-            ip = s.getsockname()[0]
-        except Exception:
-            ip = None
-            _LOGGER.error("Unable to get IP address")
-        finally:
-            s.close()
-        return ip
-    
-    def get_subnet(self, ip):
-        if self.is_valid_ip(ip):
-            octets = ip.split('.')
-            subnet = f"{octets[0]}.{octets[1]}.{octets[2]}"
-            return subnet
-        return None

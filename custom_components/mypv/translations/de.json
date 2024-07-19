@@ -1,0 +1,39 @@
+{
+    "title": "my-PV",
+    "config": {
+      "step": {
+        "user": {
+            "title": "Möglichkeiten zur Verbindung eines my-PV Gerätes"
+        },
+        "ip_known": {
+          "data": {
+            "host": "Die IP Adresse deines my-PV Gerätes"
+          }
+        },
+        "ip_unknown": {
+          "data": {
+            "subnet": "Geben Sie Ihr Subnetz ein"
+          }
+        },
+        "select_device": {
+          "title": "Wählen Sie Ihr Gerät aus",
+          "description": "Diese Geräte wurden in Ihrem Subnetz gefunden:"
+        },
+        "sensors": {
+          "title": "Auswahl der Sensoren",
+          "description": "Gerät erfolgreich verbunden! Wählen Sie Ihre Sensoren aus:"
+        }
+      },
+      "error": {
+        "could_not_connect": "Keine Verbindung zu Ihrem Gerät",
+        "host_already_configured": "Dieses Gerät wurde schon konfiguriert",
+        "no_devices_found": "Keine Geräte wurden in Ihrem Netzwerk gefunden",
+        "invalid_subnet": "Ungültiges Subnetz"
+      },
+      "abort": {
+        "host_exists": "Dieses Gerät wurde schon konfiguriert",
+        "invalid_ip_address": "Ungültige IP Adresse",
+        "no_devices_found": "Keine Geräte wurden in Ihrem Netzwerk gefunden"
+      }
+    }
+  }
