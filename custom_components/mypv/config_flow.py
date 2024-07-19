@@ -43,8 +43,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._host = None
         self._filtered_sensor_types = {}
         self._devices = {}
-        self._ip = self.get_own_ip()
-        _LOGGER.error(f"Your IP is: {self._ip}")
 
     def _host_in_configuration_exists(self, host) -> bool:
         """Return True if host exists in configuration."""
@@ -84,7 +82,8 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             menu_options={
                 "ip_known": "IP address",
-                "ip_unknown": "IP subnet scan"
+                "ip_unknown": "IP subnet scan",
+                "automatic_scan" : "Automatic scan for my-PV devices in your local network"
             },
         )  
     
@@ -137,10 +136,13 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="ip_unknown",
             data_schema=ip_unknown_schema,
             errors=self._errors,
-            description_placeholders={
-                "subnet": "Enter your subnet"
-            }
         )  
+    
+    async def async_step_automatic_scan(self, user_input=None):
+        self._devices = await self.scan_devices(self.get_subnet(self.get_own_ip()))
+        if not self._devices:
+            return self.async_abort(reason="no_devices_found")
+        return self.async_step_select_device()
     
     async def async_step_select_device(self, user_input=None):
         self._errors = {}
@@ -255,3 +257,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         finally:
             s.close()
         return ip
+    
+    def get_subnet(self, ip):
+        if self.is_valid_ip(ip):
+            octets = ip.split('.')
+            subnet = f"{octets[0]}.{octets[1]}.{octets[2]}"
+            return subnet
+        return None
