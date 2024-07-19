@@ -82,9 +82,9 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": translation.async_get(self.hass, "ip_known", "IP address"),
-                "ip_unknown": translation.async_get(self.hass, "ip_unknown", "IP subnet scan"),
-                "automatic_scan" : translation.async_get(self.hass, "automatic_scan", "Automatic scan for my-PV devices in your local network")
+                "ip_known": self._get_translation("config.step.user.menu_options.ip_known"),
+                "ip_unknown": self._get_translation("config.step.user.menu_options.ip_unknown"),
+                "automatic_scan" : self._get_translation("config.step.user.menu_options.automatic_scan")
             },
         )  
     
@@ -231,6 +231,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return None
         except asyncio.TimeoutError:
             return None
+        
+    def _get_translation(self, key):
+        """Retrieve the translation based on the key."""
+        return self.hass.config_entries.async_get_translations(DOMAIN, key)
 
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
