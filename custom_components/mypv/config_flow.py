@@ -18,7 +18,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 
-from .const import DOMAIN, SENSOR_TYPES  # pylint:disable=unused-import
+from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -81,7 +81,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        translation = await self._get_translations()
+        try:
+            translation = await self._get_translations()
+        except Exception:
+            translation = DEFAULT_MENU_OPTIONS
+        
         return self.async_show_menu(
             step_id="user",
             menu_options={
