@@ -95,6 +95,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         translations_path = self.hass.config.path(f"custom_components/mypv/translations/{language}.json")
         with open(translations_path, 'r') as file:
             data = json.load(file)
+        _LOGGER.warning(f"data: {data['config']['step']['user']}")
         return data['config']['step']['user']
     
     async def async_step_ip_known(self, user_input=None):
