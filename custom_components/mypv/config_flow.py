@@ -142,7 +142,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._devices = await self.scan_devices(self.get_subnet(self.get_own_ip()))
         if not self._devices:
             return self.async_abort(reason="no_devices_found")
-        return self.async_step_select_device()
+        return await self.async_step_select_device()
     
     async def async_step_select_device(self, user_input=None):
         self._errors = {}
