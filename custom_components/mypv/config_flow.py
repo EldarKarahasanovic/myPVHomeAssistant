@@ -2,12 +2,9 @@ import logging
 import voluptuous as vol
 import ipaddress
 import aiohttp
-import aiofiles
 import asyncio
-import json
 import socket
 from aiohttp import ClientTimeout
-from aiofiles import os as aio_os
 
 from homeassistant import config_entries
 import homeassistant.helpers.config_validation as cv
@@ -81,35 +78,14 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        translation = await self._get_translations()
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": translation.get("ip_known"),
-                "ip_unknown": translation.get("ip_unknown"),
-                "automatic_scan" : translation.get("automatic_scan")
+                "ip_known": "IP address",
+                "ip_unknown": "Subnet scan",
+                "automatic_scan" : "Automatic scan for my-PV devices in your network"
             },
-        )
-
-    async def _get_translations(self):
-        language = self.hass.config.language
-        filepath = f"./translations/{language}.json"
-        if not await aio_os.path.exists(filepath):
-            filepath = "./translations/en.json"
-        try:
-            async with aiofiles.open(filepath, mode='r') as file:
-                data = await file.read()
-
-            data = json.loads(data)
-            menu_options = data['config']['step']['user']['menu_options']
-            _LOGGER.warning(f"JSON: {menu_options}")
-            return menu_options
-        except json.JSONDecodeError:
-            raise ValueError(f"Error during parsing from {filepath}.")
-        except KeyError as e:
-            raise KeyError(f"Missing keys in the JSON data: {e}")
-        except Exception as e:
-            raise RuntimeError(f"Unexpected error: {e}")
+        )  
     
     async def async_step_ip_known(self, user_input=None):
         if user_input is not None:
