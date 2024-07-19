@@ -1,6 +1,6 @@
 # my-PV Home Assistant Integration (BETA)
 
-Home Assistant integration for my-PV
+Home Assistant Component for AC•THOR of my-PV
 
 <a href="https://buymeacoffee.com/melik787" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee"></a>
 
