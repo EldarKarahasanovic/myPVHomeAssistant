@@ -102,7 +102,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             data = json.loads(data)
             menu_options = data['config']['step']['user']['menu_options']
-            _LOGGER.warning(f"JSON: {menu_options}")
             return menu_options
         except json.JSONDecodeError:
             raise ValueError(f"Error during parsing from {filepath}.")
