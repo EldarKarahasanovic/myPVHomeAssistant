@@ -7,7 +7,6 @@ import socket
 from aiohttp import ClientTimeout
 
 from homeassistant import config_entries
-from homeassistant.helpers import translation
 import homeassistant.helpers.config_validation as cv
 
 from homeassistant.const import (
@@ -91,10 +90,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             },
         )
 
-    async def async_get_translations(self):
+    async def async_get_translations(self) -> dict:
         """Fetch translations from the current language."""
         hass = self.hass
-        translations = hass.data.get('translations', {}).get('my_pv', {})
+        translations = hass.data.get('translations', {}).get('mypv', {})
         return translations
     
     async def async_step_ip_known(self, user_input=None):
