@@ -7,7 +7,6 @@ import socket
 from aiohttp import ClientTimeout
 
 from homeassistant import config_entries
-from homeassistant.util import translation
 import homeassistant.helpers.config_validation as cv
 
 from homeassistant.const import (
