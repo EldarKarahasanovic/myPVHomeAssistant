@@ -1,3 +1,4 @@
+import json
 import logging
 import voluptuous as vol
 import ipaddress
@@ -77,24 +78,24 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._filtered_sensor_types = {}
 
     async def async_step_user(self, user_input=None):
+        translations = await self._load_translations()
         """Handle the initial step."""
-        # Get translations for the current language
-        translations = await self.async_get_translations()
-
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": translations.get("config.step.user.menu_options.ip_known", "IP address"),
-                "ip_unknown": translations.get("config.step.user.menu_options.ip_unknown", "Subnet scan"),
-                "automatic_scan": translations.get("config.step.user.menu_options.automatic_scan", "Automatic scan for my-PV devices in your network")
-            },
+                "ip_known": translations.get("menu_options.ip_known", "IP address"),
+                "ip_unknown": translations.get("menu_options.ip_unknown", "Subnet scan"),
+                "automatic_scan": translations.get("menu_options.automatic_scan", "Automatic scan for my-PV devices in your network"),
+            }
         )
-
-    async def async_get_translations(self) -> dict:
-        """Fetch translations from the current language."""
-        hass = self.hass
-        translations = hass.data.get('translations', {}).get('mypv', {})
-        return translations
+    
+    async def _load_translations(self):
+        language = self.hass.config.language
+        _LOGGER.warning(f"Sprache {language}")
+        translations_path = self.hass.config.path(f"custom_components/mypv/translations/{language}.json")
+        with open(translations_path, 'r') as file:
+            data = json.load(file)
+        return data['config']['step']['user']
     
     async def async_step_ip_known(self, user_input=None):
         if user_input is not None:
