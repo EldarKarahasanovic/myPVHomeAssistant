@@ -7,6 +7,7 @@ import socket
 from aiohttp import ClientTimeout
 
 from homeassistant import config_entries
+from homeassistant.helpers import translation
 import homeassistant.helpers.config_validation as cv
 
 from homeassistant.const import (
@@ -78,12 +79,14 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
+        translations = await self._async_get_translations()
+
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": "IP address",
-                "ip_unknown": "IP subnet scan",
-                "automatic_scan" : "Automatic scan for my-PV devices in your local network"
+                "ip_known": translations["menu_options"]["ip_known"],
+                "ip_unknown": translations["menu_options"]["ip_unknown"],
+                "automatic_scan" : translations["menu_options"]["automatic_scan"]
             },
         )  
     
@@ -230,6 +233,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return None
         except asyncio.TimeoutError:
             return None
+        
+    async def _async_get_translations(self):
+        """Fetch translations for the current language."""
+        lang = self.hass.config.language
+        return await translation.async_get_translations(self.hass, lang)
 
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""

@@ -3,7 +3,12 @@
     "config": {
       "step": {
         "user": {
-            "title": "Connection method of your my-PV device"
+            "title": "Connection method of your my-PV device",
+            "menu_options": {
+                "ip_known": "IP address",
+                "ip_unknown": "IP subnet scan",
+                "automatic_scan": "Automatic scan for my-PV devices in your local network"
+            }
         },
         "ip_known": {
           "data": {
@@ -17,7 +22,7 @@
         },
         "select_device": {
           "title": "Select your device",
-          "description": "Those devices were found in your subnet:"
+          "description": "Those devices were found in your network:"
         },
         "sensors": {
           "title": "Select your sensors",
@@ -28,7 +33,8 @@
         "could_not_connect": "No connection to any my-PV device",
         "host_already_configured": "That my-PV device is already configured",
         "no_devices_found": "No devices found in your subnet",
-        "invalid_subnet": "Invalid subnet"
+        "invalid_subnet": "Invalid subnet",
+        "invalid_ip": "Invalid IP"
       },
       "abort": {
         "host_exists": "That my-PV device is already configured",
