@@ -3,7 +3,7 @@
     "config": {
       "step": {
         "user": {
-            "title": "Connection method of your my-PV device",
+            "title": "Connect your my-PV device",
             "menu_options": {
                 "ip_known": "IP address",
                 "ip_unknown": "IP subnet scan",

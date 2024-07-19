@@ -3,7 +3,7 @@
     "config": {
       "step": {
         "user": {
-            "title": "Verbindungsmöglichkeiten eines my-PV Gerätes",
+            "title": "Verbinden Sie Ihr my-PV Gerät",
             "menu_options": {
                 "ip_known": "IP Adresse",
                 "ip_unknown": "IP Subnetz Scan",
