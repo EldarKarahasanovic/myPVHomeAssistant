@@ -31,7 +31,7 @@ BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 - PR to the Home Assistant Core
 
 ### 2-IN PROGRESS:
-- Display status of my-PV devices
+- Display screen mode of my-PV devices
 
 ### 3-DONE:
 - Monitoring of all status values
