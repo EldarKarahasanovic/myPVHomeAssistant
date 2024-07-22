@@ -15,12 +15,6 @@ DATA_COORDINATOR = "coordinator"
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
 
-DEFAULT_MENU_OPTIONS = {
-        "ip_known": "IP Address",
-        "ip_unknown": "IP Subnet Scan",
-        "automatic_scan": "Automatic Scan in Your Network"
-    }
-
 # 1. Spalte Sensorname
 # 2. Spalte Einheit
 # 3. Spalte Icon

@@ -1,7 +1,7 @@
 {
   "domain": "mypv",
   "version": "0.2.0",
-  "name": "my-PV",
+  "name": "my-PV AC•THOR and ELWA",
   "documentation": "https://github.com/EldarKarahasanovic/myPVHomeAssistant",
   "config_flow": true,
   "dependencies": [],
