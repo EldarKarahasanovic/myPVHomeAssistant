@@ -26,6 +26,7 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self.coordinator = coordinator
         self._name = f"Device state {host}"
+        self._switch = "device_state"
         self._host = host
         self._is_on = False
         self._model = self.coordinator.data["info"]["device"]
@@ -64,3 +65,8 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
             "manufacturer": "my-PV",
             "model": self._model,
         }
+    
+    @property
+    def unique_id(self):
+        """Return unique id based on device serial and variable."""
+        return "{} {}".format(self.serial_number, self._switch)
