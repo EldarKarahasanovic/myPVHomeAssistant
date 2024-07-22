@@ -76,7 +76,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.error(f"Failed to connect to {host}: {e}")
                 self._filtered_sensor_types = {}
             except asyncio.TimeoutError as e:
-                _LOGGER.error(f"Timeout error occured on {host}: {e}")
+                _LOGGER.error(f"Timeout error occurred on {host}: {e}")
                 self._filtered_sensor_types = {}
 
     async def async_step_user(self, user_input=None):
@@ -261,16 +261,18 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
         self._errors = {}
-        
+
         if user_input is not None:
+            selected_sensors = user_input[CONF_MONITORED_CONDITIONS]
             self._info['device'] = user_input.get('device', self._info.get('device'))
             self._info['number'] = user_input.get('number', self._info.get('number'))
             return self.async_create_entry(
                 title=f"{self._devices[self._host]}",
                 data={
                     CONF_HOST: self._host,
-                    CONF_MONITORED_CONDITIONS: user_input[CONF_MONITORED_CONDITIONS],
+                    CONF_MONITORED_CONDITIONS: selected_sensors,
                     '_filtered_sensor_types': self._filtered_sensor_types,
+                    'selected_sensors': selected_sensors,
                 },
             )
 
@@ -281,7 +283,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED_CONDITIONS
+                    CONF_MONITORED_CONDITIONS, default=default_monitored_conditions
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
@@ -289,6 +291,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="sensors", data_schema=setup_schema, errors=self._errors
         )
+
 
     async def async_step_import(self, user_input=None):
         """Import a config entry."""
@@ -314,6 +317,7 @@ class MypvOptionsFlowHandler(config_entries.OptionsFlow):
         """Initialize options flow."""
         self.config_entry = config_entry
         self.filtered_sensor_types = config_entry.data.get('_filtered_sensor_types', {})
+        self.selected_sensors = config_entry.data.get('selected_sensors', [])  
 
     async def async_step_init(self, user_input=None):
         """Manage the options."""
@@ -330,7 +334,7 @@ class MypvOptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required(
                     CONF_MONITORED_CONDITIONS,
                     default=self.config_entry.options.get(
-                        CONF_MONITORED_CONDITIONS, DEFAULT_MONITORED_CONDITIONS
+                        CONF_MONITORED_CONDITIONS, self.selected_sensors  
                     ),
                 ): cv.multi_select(self.filtered_sensor_types),
             }
