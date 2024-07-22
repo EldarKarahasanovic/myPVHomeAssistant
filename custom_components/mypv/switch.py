@@ -24,11 +24,10 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, coordinator, host):
         """Initialize the switch"""
         super().__init__(coordinator)
-        self.coordinator = coordinator
         self._name = f"Device state {host}"
         self._switch = "device_state"
         self._host = host
-        self._is_on = False
+        self._is_on = self.coordinator.data["setup"]["devmode"]  # Initial state
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
     
@@ -41,20 +40,20 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         return self._name
     
     async def async_turn_on(self):
-        self._is_on = True
         await self.async_toggle_switch(1)
+        self._is_on = True
         self.async_write_ha_state()
 
     async def async_turn_off(self):
-        self._is_on = False
         await self.async_toggle_switch(0)
+        self._is_on = False
         self.async_write_ha_state()
     
     async def async_toggle_switch(self, mode):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://{self._host}/data.jsn?devmode={mode}") as response:
                 if response.status != 200:
-                    _LOGGER.error(f"Failed to turn on/off the device {self._entity_id}")
+                    _LOGGER.error(f"Failed to turn on/off the device {self.unique_id}")
     
     @property
     def device_info(self):
@@ -69,4 +68,4 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     @property
     def unique_id(self):
         """Return unique id based on device serial and variable."""
-        return "{} {}".format(self.serial_number, self._switch)
+        return "{}_{}".format(self.serial_number, self._switch)
