@@ -18,12 +18,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the toggle switch."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-    async_add_entities([ToggleSwitch(coordinator, host)], True)
+    async_add_entities([ToggleSwitch(coordinator, host, entry.title)], True)
 
 class ToggleSwitch(CoordinatorEntity, SwitchEntity):
-    def __init__(self, coordinator, host):
+    def __init__(self, coordinator, host, name):
         """Initialize the switch"""
         super().__init__(coordinator)
+        self._device_name = name
         self._name = "Device state"
         self._switch = "device_state"
         self._host = host
@@ -54,16 +55,16 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
             async with session.get(f"http://{self._host}/data.jsn?devmode={mode}") as response:
                 if response.status != 200:
                     _LOGGER.error(f"Failed to turn on/off the device {self.unique_id}")
-    """
+    
     @property
     def device_info(self):
-        Return information about the device.
+        """Return information about the device."""
         return {
             "identifiers": {(DOMAIN, self.serial_number)},
-            "name": self._name,
+            "name": self._device_name,
             "manufacturer": "my-PV",
             "model": self._model,
-        }"""
+        }
     
     @property
     def unique_id(self):
