@@ -261,17 +261,18 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_sensors(self, user_input=None):
         """Handle the sensor selection step."""
         self._errors = {}
-        
+
         if user_input is not None:
+            selected_sensors = user_input[CONF_MONITORED_CONDITIONS]
             self._info['device'] = user_input.get('device', self._info.get('device'))
             self._info['number'] = user_input.get('number', self._info.get('number'))
             return self.async_create_entry(
                 title=f"{self._devices[self._host]}",
                 data={
                     CONF_HOST: self._host,
-                    CONF_MONITORED_CONDITIONS: user_input[CONF_MONITORED_CONDITIONS],
+                    CONF_MONITORED_CONDITIONS: selected_sensors,
                     '_filtered_sensor_types': self._filtered_sensor_types,
-                    'selected_sensors': user_input[CONF_MONITORED_CONDITIONS], 
+                    'selected_sensors': selected_sensors,
                 },
             )
 
@@ -282,7 +283,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED_CONDITIONS
+                    CONF_MONITORED_CONDITIONS, default=default_monitored_conditions
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
@@ -290,6 +291,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="sensors", data_schema=setup_schema, errors=self._errors
         )
+
 
     async def async_step_import(self, user_input=None):
         """Import a config entry."""

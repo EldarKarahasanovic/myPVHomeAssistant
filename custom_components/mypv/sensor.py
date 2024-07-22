@@ -20,24 +20,47 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Add or update my-PV entry."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
 
-    
     if CONF_MONITORED_CONDITIONS in entry.options:
         configured_sensors = entry.options[CONF_MONITORED_CONDITIONS]
     else:
         configured_sensors = entry.data[CONF_MONITORED_CONDITIONS]
 
     entity_registry = async_get(hass)
-    current_entities = [entity for entity in entity_registry.entities.values() if entity.platform == DOMAIN and entity.config_entry_id == entry.entry_id]
+    current_entities = [
+        entity
+        for entity in entity_registry.entities.values()
+        if entity.platform == DOMAIN and entity.config_entry_id == entry.entry_id
+    ]
 
-    sensors_to_remove = [entity for entity in current_entities if entity.entity_id not in configured_sensors]
+    current_sensor = []
+    for entity in current_entities:
+        if isinstance(entity, MypvDevice):
+            current_sensor.append(entity.entity_id)
+
+    new_sensor = []
+    for sensor in configured_sensors:
+        new_sensor_id = f"{entry.entry_id}_{sensor}"
+        new_sensor.append(new_sensor_id)
+
+    sensors_to_remove = []
+    for entity in current_entities:
+        if isinstance(entity, MypvDevice):
+            entity_id = entity.entity_id
+            if entity_id not in new_sensor:
+                sensors_to_remove.append(entity)
 
     for entity in sensors_to_remove:
         entity_registry.async_remove(entity.entity_id)
 
-    entities = [MypvDevice(coordinator, sensor, entry.title) for sensor in configured_sensors]
-    async_add_entities(entities)
+    entities_to_add = []
+    for sensor in configured_sensors:
+        new_sensor_id = f"{entry.entry_id}_{sensor}"
+        if new_sensor_id not in current_sensor:
+            new_entity = MypvDevice(coordinator, sensor, entry.title)
+            entities_to_add.append(new_entity)
 
-
+   
+    async_add_entities(entities_to_add)
 
 class MypvDevice(CoordinatorEntity):
     """Representation of a my-PV device."""
