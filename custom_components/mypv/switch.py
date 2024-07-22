@@ -40,6 +40,21 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     def name(self):
         return self._name
     
+    @property
+    def device_info(self):
+        """Return information about the device."""
+        return {
+            "identifiers": {(DOMAIN, self.serial_number)},
+            "name": self._device_name,
+            "manufacturer": "my-PV",
+            "model": self._model,
+        }
+    
+    @property
+    def unique_id(self):
+        """Return unique id based on device serial and variable."""
+        return "{}_{}".format(self.serial_number, self._switch)
+    
     async def async_turn_on(self):
         await self.async_toggle_switch(1)
         self._is_on = True
@@ -55,18 +70,3 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
             async with session.get(f"http://{self._host}/data.jsn?devmode={mode}") as response:
                 if response.status != 200:
                     _LOGGER.error(f"Failed to turn on/off the device {self.unique_id}")
-    
-    @property
-    def device_info(self):
-        """Return information about the device."""
-        return {
-            "identifiers": {(DOMAIN, self.serial_number)},
-            "name": self._device_name,
-            "manufacturer": "my-PV",
-            "model": self._model,
-        }
-    
-    @property
-    def unique_id(self):
-        """Return unique id based on device serial and variable."""
-        return "{}_{}".format(self.serial_number, self._switch)
