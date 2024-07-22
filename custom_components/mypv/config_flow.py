@@ -276,14 +276,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 },
             )
 
-        default_monitored_conditions = (
-            [] if self._async_current_entries() else DEFAULT_MONITORED_CONDITIONS
-        )
-
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default=default_monitored_conditions
+                    CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED_CONDITIONS
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
