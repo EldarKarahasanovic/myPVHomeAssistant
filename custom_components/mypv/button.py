@@ -18,14 +18,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the boost button"""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-    async_add_entities([BoostButton(coordinator, host)], True)
+    async_add_entities([BoostButton(coordinator, host, entry.title)], True)
 
 class BoostButton(CoordinatorEntity, ButtonEntity):
-    def __init__(self, coordinator, host) -> None:
+    def __init__(self, coordinator, host, name) -> None:
         """Initialize the button"""
         super().__init__(coordinator)
         self._icon = "mdi:heat-wave"
-        self._name = "Boost button"
+        self._name = name
         self._device_name = "boost_button"
         self._host = host
         self._model = self.coordinator.data["info"]["device"]
