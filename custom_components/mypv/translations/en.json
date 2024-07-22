@@ -1,45 +1,45 @@
 {
-    "title": "my-PV",
-    "config": {
-      "step": {
-        "user": {
-            "title": "Connect your my-PV device",
-            "menu_options": {
-                "ip_known": "IP address",
-                "ip_unknown": "IP subnet scan",
-                "automatic_scan": "Automatic scan for my-PV devices in your local network"
-            }
-        },
-        "ip_known": {
-          "data": {
-            "host": "The IP address of your my-PV device"
+  "title": "my-PV",
+  "config": {
+    "step": {
+      "user": {
+          "title": "Connect your my-PV device",
+          "menu_options": {
+              "ip_known": "IP address",
+              "ip_unknown": "IP subnet scan",
+              "automatic_scan": "Automatic scan for my-PV devices in your local network"
           }
-        },
-        "ip_unknown": {
-          "data": {
-            "subnet": "Enter your subnet"
-          }
-        },
-        "select_device": {
-          "title": "Select your device",
-          "description": "Those devices were found in your network:"
-        },
-        "sensors": {
-          "title": "Select your sensors",
-          "description": "Device connected successfully! Choose your sensors:"
+      },
+      "ip_known": {
+        "data": {
+          "host": "The IP address of your my-PV device"
         }
       },
-      "error": {
-        "could_not_connect": "No connection to any my-PV device",
-        "host_already_configured": "That my-PV device is already configured",
-        "no_devices_found": "No devices found in your subnet",
-        "invalid_subnet": "Invalid subnet",
-        "invalid_ip": "Invalid IP"
+      "ip_unknown": {
+        "data": {
+          "subnet": "Enter your subnet"
+        }
       },
-      "abort": {
-        "host_exists": "That my-PV device is already configured",
-        "invalid_ip_address": "IP address is invalid",
-        "no_devices_found": "No devices found in your subnet"
+      "select_device": {
+        "title": "Select your device",
+        "description": "Those devices were found in your network:"
+      },
+      "sensors": {
+        "title": "Select your sensors",
+        "description": "Device connected successfully! Choose your sensors:"
       }
+    },
+    "error": {
+      "could_not_connect": "No connection to any my-PV device",
+      "host_already_configured": "That my-PV device is already configured",
+      "no_devices_found": "No devices found in your subnet",
+      "invalid_subnet": "Invalid subnet",
+      "invalid_ip": "Invalid IP"
+    },
+    "abort": {
+      "host_exists": "That my-PV device is already configured",
+      "invalid_ip_address": "IP address is invalid",
+      "no_devices_found": "No devices found in your subnet"
     }
   }
+}

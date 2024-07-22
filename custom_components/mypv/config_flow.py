@@ -301,7 +301,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if not await self.check_ip_device(self._host):
             return self.async_abort(reason="invalid_ip_address")
         await self._get_sensor(self._host)
-<<<<<<< HEAD
         return await self.async_step_sensors(user_input)
     
     @staticmethod
@@ -309,6 +308,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
         return MypvOptionsFlowHandler(config_entry)
     
+
 
 class MypvOptionsFlowHandler(config_entries.OptionsFlow):
     """Handles options flow"""
@@ -341,6 +341,3 @@ class MypvOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
         return self.async_show_form(step_id="init", data_schema=options_schema)
-=======
-        return await self.async_step_sensors(user_input)
->>>>>>> parent of 72efeae (Revert "Added new  way to discover your device")

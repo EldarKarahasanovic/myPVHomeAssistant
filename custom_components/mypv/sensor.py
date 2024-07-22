@@ -20,16 +20,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Add or update my-PV entry."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
 
-<<<<<<< HEAD
     if CONF_MONITORED_CONDITIONS in entry.options:
         configured_sensors = entry.options[CONF_MONITORED_CONDITIONS]
     else:
         configured_sensors = entry.data[CONF_MONITORED_CONDITIONS]
-=======
-    for sensor in entry.data[CONF_MONITORED_CONDITIONS]:
-        entities.append(MypvDevice(coordinator, sensor, entry.title))
-    async_add_entities(entities)
->>>>>>> parent of 72efeae (Revert "Added new  way to discover your device")
 
     entity_registry = async_get(hass)
     current_entities = [
