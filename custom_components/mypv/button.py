@@ -26,6 +26,7 @@ class BoostButton(CoordinatorEntity, ButtonEntity):
         super().__init__(coordinator)
         self._icon = "mdi:heat-wave"
         self._name = "Boost button"
+        self._device_name = "boost_button"
         self._host = host
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
