@@ -7,9 +7,12 @@ from homeassistant.const import (
     UnitOfElectricCurrent,
     UnitOfFrequency,
     UnitOfTemperature,
+    Platform
 )
 
 DOMAIN = "mypv"
+
+PLATFORMS = [Platform.SENSOR]
 
 DATA_COORDINATOR = "coordinator"
 
