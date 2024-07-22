@@ -2,8 +2,12 @@ import logging
 import voluptuous as vol
 import ipaddress
 import aiohttp
+import aiofiles
 import asyncio
+import json
+import socket
 from aiohttp import ClientTimeout
+from aiofiles import os as aio_os
 
 from homeassistant import config_entries
 import homeassistant.helpers.config_validation as cv
@@ -14,7 +18,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 
-from .const import DOMAIN, SENSOR_TYPES  # pylint:disable=unused-import
+from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -77,13 +81,38 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
+        try:
+            translation = await self._get_translations()
+        except Exception:
+            translation = DEFAULT_MENU_OPTIONS
+        
         return self.async_show_menu(
             step_id="user",
             menu_options={
-                "ip_known": "IP address",
-                "ip_unknown": "IP subnet scan"
+                "ip_known": translation.get("ip_known"),
+                "ip_unknown": translation.get("ip_unknown"),
+                "automatic_scan" : translation.get("automatic_scan")
             },
-        )  
+        )
+
+    async def _get_translations(self):
+        language = self.hass.config.language
+        filepath = f"custom_components/mypv/translations/{language}.json"
+        if not await aio_os.path.exists(filepath):
+            filepath = "custom_components/mypv/translations/en.json"
+        try:
+            async with aiofiles.open(filepath, mode='r') as file:
+                data = await file.read()
+
+            data = json.loads(data)
+            menu_options = data['config']['step']['user']['menu_options']
+            return menu_options
+        except json.JSONDecodeError:
+            raise ValueError(f"Error during parsing from {filepath}.")
+        except KeyError as e:
+            raise KeyError(f"Missing keys in the JSON data: {e}")
+        except Exception as e:
+            raise RuntimeError(f"Unexpected error: {e}")
     
     async def async_step_ip_known(self, user_input=None):
         if user_input is not None:
@@ -133,8 +162,14 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="ip_unknown",
             data_schema=ip_unknown_schema,
-            errors=self._errors
+            errors=self._errors,
         )  
+    
+    async def async_step_automatic_scan(self, user_input=None):
+        self._devices = await self.scan_devices(self.get_subnet(self.get_own_ip()))
+        if not self._devices:
+            return self.async_abort(reason="no_devices_found")
+        return await self.async_step_select_device()
     
     async def async_step_select_device(self, user_input=None):
         self._errors = {}
@@ -169,6 +204,25 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return False
         ip = subnet + ".0"
         return self.is_valid_ip(ip)
+    
+    def get_own_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = None
+            _LOGGER.error("Unable to get IP address")
+        finally:
+            s.close()
+        return ip
+    
+    def get_subnet(self, ip):
+        if self.is_valid_ip(ip):
+            octets = ip.split('.')
+            subnet = f"{octets[0]}.{octets[1]}.{octets[2]}"
+            return subnet
+        return None
         
     async def check_ip_device(self, ip):
         async with aiohttp.ClientSession() as session:
@@ -247,6 +301,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if not await self.check_ip_device(self._host):
             return self.async_abort(reason="invalid_ip_address")
         await self._get_sensor(self._host)
+<<<<<<< HEAD
         return await self.async_step_sensors(user_input)
     
     @staticmethod
@@ -286,3 +341,6 @@ class MypvOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
         return self.async_show_form(step_id="init", data_schema=options_schema)
+=======
+        return await self.async_step_sensors(user_input)
+>>>>>>> parent of 72efeae (Revert "Added new  way to discover your device")
