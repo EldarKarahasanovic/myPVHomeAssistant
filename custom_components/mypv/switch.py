@@ -59,11 +59,13 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     async def async_turn_on(self):
         await self.async_toggle_switch(1)
         self._is_on = True
+        await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
 
     async def async_turn_off(self):
         await self.async_toggle_switch(0)
         self._is_on = False
+        await self.coordinator.async_request_refresh()
         self.async_write_ha_state()
     
     async def async_toggle_switch(self, mode):
