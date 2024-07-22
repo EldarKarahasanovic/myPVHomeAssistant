@@ -1,6 +1,6 @@
 """ Integration for MYPV AC-Thor"""
 import voluptuous as vol
-
+import logging
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import (
@@ -12,8 +12,10 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN, SENSOR_TYPES, DATA_COORDINATOR
+from .const import DOMAIN, SENSOR_TYPES, DATA_COORDINATOR, PLATFORMS
 from .coordinator import MYPVDataUpdateCoordinator
+
+_LOGGER = logging.getLogger(__name__)
 
 
 CONFIG_SCHEMA = vol.Schema(
@@ -56,6 +58,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     await coordinator.async_refresh()
 
+    # Reload entry when its updated.
+    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
+
     if not coordinator.last_update_success:
         raise ConfigEntryNotReady
 
@@ -67,6 +72,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     return True
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Unload a config entry"""
-    return await hass.config_entries.async_unload_platforms(entry, ["sensor", "switch", "button"])
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        hass.data[DOMAIN].pop(entry.entry_id)
+    return unload_ok
+
+async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle options update."""
+    await hass.config_entries.async_reload(entry.entry_id)

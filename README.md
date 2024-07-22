@@ -1,6 +1,6 @@
 # my-PV Home Assistant Integration (BETA)
 
-Home Assistant Component for AC•THOR of my-PV
+Home Assistant integration for my-PV
 
 <a href="https://buymeacoffee.com/melik787" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee"></a>
 
@@ -26,19 +26,19 @@ The integration is configurated via UI
 BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 
 ### 1-TODO:
-- Complete services
-- clean up code
-- Test other devices (ELWA, AC•THOR 9s, etc.)
-- Autodiscovery
+- clean up and testing code
+- Test other devices (my-PV WiFi Meter, other devices work)
+- PR to the Home Assistant Core
 
 ### 2-IN PROGRESS:
--  Implementing hot water assurance
--  Implementing a standard dashboard
+- Display screen mode of my-PV devices
 
 ### 3-DONE:
 - Monitoring of all status values
-- Fixed https:// github.com/zaubererty/homeassistant-mvpv/issues/7 (deprecated constants)
+- Fixed <a href="https://github.com/zaubererty/homeassistant-mvpv/issues/7" target="_blank">issue #7 from @zaubererty</a> (deprecated constants)
 - Added icons
 - Added button for warm water boost
 - Added switch for devmode
 - Filtering sensors based on device type
+- Autodiscovery (inofficial)
+- Configuring sensors
