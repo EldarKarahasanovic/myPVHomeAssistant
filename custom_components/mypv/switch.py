@@ -28,12 +28,13 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         self._name = "Device state"
         self._switch = "device_state"
         self._host = host
-        self._is_on = self.coordinator.data["setup"]["devmode"]  # Initial state
+        self._is_on = self.coordinator.data["setup"]["devmode"]  
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
     
     @property
     def is_on(self):
+        self._is_on = self.coordinator.data["setup"]["devmode"]
         return self._is_on
 
     @property
