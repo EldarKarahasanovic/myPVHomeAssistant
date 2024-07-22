@@ -24,7 +24,7 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, coordinator, host):
         """Initialize the switch"""
         super().__init__(coordinator)
-        self._name = f"Device state {host}"
+        self._name = "Device state"
         self._switch = "device_state"
         self._host = host
         self._is_on = self.coordinator.data["setup"]["devmode"]  # Initial state
@@ -54,16 +54,16 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
             async with session.get(f"http://{self._host}/data.jsn?devmode={mode}") as response:
                 if response.status != 200:
                     _LOGGER.error(f"Failed to turn on/off the device {self.unique_id}")
-    
+    """
     @property
     def device_info(self):
-        """Return information about the device."""
+        Return information about the device.
         return {
             "identifiers": {(DOMAIN, self.serial_number)},
             "name": self._name,
             "manufacturer": "my-PV",
             "model": self._model,
-        }
+        }"""
     
     @property
     def unique_id(self):
