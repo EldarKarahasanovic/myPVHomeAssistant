@@ -28,17 +28,24 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         self._name = "Device state"
         self._switch = "device_state"
         self._host = host
-        self._is_on = self.coordinator.data["setup"]["devmode"]  # Initial state
+        self._icon = "mdi:power"
+        self._is_on = self.coordinator.data["setup"]["devmode"] if self.coordinator.data else False
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
     
     @property
     def is_on(self):
+        if self.coordinator.data:
+            self._is_on = self.coordinator.data["setup"]["devmode"]
         return self._is_on
 
     @property
     def name(self):
         return self._name
+    
+    @property
+    def icon(self):
+        return self._icon
     
     @property
     def device_info(self):
@@ -58,11 +65,13 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     async def async_turn_on(self):
         await self.async_toggle_switch(1)
         self._is_on = True
+        await self.coordinator.async_refresh()
         self.async_write_ha_state()
 
     async def async_turn_off(self):
         await self.async_toggle_switch(0)
         self._is_on = False
+        await self.coordinator.async_refresh()
         self.async_write_ha_state()
     
     async def async_toggle_switch(self, mode):
