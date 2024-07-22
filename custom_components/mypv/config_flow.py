@@ -76,7 +76,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.error(f"Failed to connect to {host}: {e}")
                 self._filtered_sensor_types = {}
             except asyncio.TimeoutError as e:
-                _LOGGER.error(f"Timeout error occured on {host}: {e}")
+                _LOGGER.error(f"Timeout error occurred on {host}: {e}")
                 self._filtered_sensor_types = {}
 
     async def async_step_user(self, user_input=None):
@@ -271,6 +271,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_HOST: self._host,
                     CONF_MONITORED_CONDITIONS: user_input[CONF_MONITORED_CONDITIONS],
                     '_filtered_sensor_types': self._filtered_sensor_types,
+                    'selected_sensors': user_input[CONF_MONITORED_CONDITIONS], 
                 },
             )
 
@@ -314,6 +315,7 @@ class MypvOptionsFlowHandler(config_entries.OptionsFlow):
         """Initialize options flow."""
         self.config_entry = config_entry
         self.filtered_sensor_types = config_entry.data.get('_filtered_sensor_types', {})
+        self.selected_sensors = config_entry.data.get('selected_sensors', [])  
 
     async def async_step_init(self, user_input=None):
         """Manage the options."""
@@ -330,7 +332,7 @@ class MypvOptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required(
                     CONF_MONITORED_CONDITIONS,
                     default=self.config_entry.options.get(
-                        CONF_MONITORED_CONDITIONS, DEFAULT_MONITORED_CONDITIONS
+                        CONF_MONITORED_CONDITIONS, self.selected_sensors  
                     ),
                 ): cv.multi_select(self.filtered_sensor_types),
             }
