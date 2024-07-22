@@ -7,6 +7,7 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_MONITORED_CONDITIONS,
 )
+
 import homeassistant.helpers.config_validation as cv
 
 from homeassistant.exceptions import ConfigEntryNotReady
@@ -16,7 +17,6 @@ from .const import DOMAIN, SENSOR_TYPES, DATA_COORDINATOR, PLATFORMS
 from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-
 
 CONFIG_SCHEMA = vol.Schema(
     {
