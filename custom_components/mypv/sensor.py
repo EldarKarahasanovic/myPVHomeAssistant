@@ -90,11 +90,27 @@ class MypvDevice(CoordinatorEntity):
         """Return the state of the device."""
         try:
             state = self.coordinator.data[self._data_source][self.type]
+            if self.type == "screen_mode_flag":
+                if state == 0:
+                    state = "Standby"
+                elif state == 1:
+                    state = "Heizen"
+                elif state == 2:
+                    state = "Heizen Sicherstellung"
+                elif state == 3:
+                    state = "Heizen beendet"
+                elif state == 4:
+                    state = "Keine Verbindung / Deaktiviert"
+                elif state == 5:
+                    state = "Fehler"
+                elif state == 6:
+                    state = "Sperrzeit aktiv"
+                    
             if self.type == "power_act":
+                relOut = int(self.coordinator.data[self._data_source].get("rel1_out", None))
+                loadNom = int(self.coordinator.data[self._data_source].get("load_nom", None))
                 if relOut is not None and loadNom is not None:
-                    relOut = int(self.coordinator.data[self._data_source]["rel1_out"])
-                    loadNom = int(self.coordinator.data[self._data_source]["load_nom"])
-                state = (relOut * loadNom) + int(state)
+                    state = (relOut * loadNom) + int(state)
             self._last_value = state
         except Exception as ex:
             _LOGGER.error(ex)
