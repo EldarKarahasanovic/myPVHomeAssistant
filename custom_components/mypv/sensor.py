@@ -9,7 +9,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
-from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, ENTITIES_NOT_TO_BE_REMOVED
+from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, ENTITIES_NOT_TO_BE_REMOVED, DEVICE_STATUS
 from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -86,21 +86,9 @@ class MypvDevice(CoordinatorEntity):
         """Return the state of the device."""
         try:
             state = self.coordinator.data[self._data_source][self.type]
+            
             if self.type == "screen_mode_flag":
-                if state == 0:
-                    state = "Standby"
-                elif state == 1:
-                    state = "Heizen"
-                elif state == 2:
-                    state = "Heizen Sicherstellung"
-                elif state == 3:
-                    state = "Heizen beendet"
-                elif state == 4:
-                    state = "Keine Verbindung / Deaktiviert"
-                elif state == 5:
-                    state = "Fehler"
-                elif state == 6:
-                    state = "Sperrzeit aktiv"
+                state = DEVICE_STATUS.get(self.hass.config.language, "en")[state]
                     
             if self.type == "power_act":
                 relOut = int(self.coordinator.data[self._data_source].get("rel1_out", None))

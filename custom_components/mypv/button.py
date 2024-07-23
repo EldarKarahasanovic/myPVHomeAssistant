@@ -18,31 +18,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the boost button"""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-    
-    existing_entities = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("entities", [])
-    _LOGGER.warning(f"Existing Entities button: {existing_entities}")
-    _LOGGER.warning(f"Entry ID button: {entry.entry_id}")
-    _LOGGER.warning(f"Entry UNIQUE ID button: {entry.unique_id}")
-    if any(entity.unique_id == entry.entry_id for entity in existing_entities):
-        _LOGGER.warning("Boost button already exists")
-        return True 
 
-    _LOGGER.warning("Adding boost button")
-    async_add_entities([BoostButton(coordinator, host, entry.title)], True)
+    entities = []
+    boostButton = MYPVButton(coordinator, host, "mdi:heat-wave", "Boost button", entry.title)
+    ww1boostButton = MYPVButton(coordinator, host, "mdi:content-save", "Save warmwater boost", entry.title)
+    entities.extend([boostButton, ww1boostButton])
+    async_add_entities([MYPVButton(coordinator, host, entry.title)], True)
 
     return True
 
-class BoostButton(CoordinatorEntity, ButtonEntity):
-    def __init__(self, coordinator, host, name) -> None:
+class MYPVButton(CoordinatorEntity, ButtonEntity):
+    def __init__(self, coordinator, host, icon, name, deviceName) -> None:
         """Initialize the button"""
         super().__init__(coordinator)
-        self._icon = "mdi:heat-wave"
-        self._name = "Boost button"
-        self._device_name = name
+        self._icon = icon
+        self._name = name
+        self._device_name = deviceName
         self._host = host
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
-        self._button = f"boost_button_{self._host}"
+        self._button = f"{self.name}_{self._host}"
 
     @property
     def name(self):
@@ -69,13 +64,16 @@ class BoostButton(CoordinatorEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://{self._host}/data.jsn") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    boostActive = data.get("boostactive")
-                    newBoost = not boostActive
-                    async with session.get(f"http://{self._host}/data.jsn?bststrt={int(newBoost)}") as response2:
-                        if response2.status != 200:
-                            _LOGGER.error("Failed to (de-)activate boost")
-                else:
-                    _LOGGER.error("Failed to (de-)activate boost")
+            if self._name == "Boost button":
+                async with session.get(f"http://{self._host}/data.jsn") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        boostActive = data.get("boostactive")
+                        newBoost = not boostActive
+                        async with session.get(f"http://{self._host}/data.jsn?bststrt={int(newBoost)}") as response2:
+                            if response2.status != 200:
+                                _LOGGER.error("Failed to (de-)activate boost")
+                    else:
+                        _LOGGER.error("Failed to (de-)activate boost")
+            #else:
+                #async with session.get(f"http://{self._host}/data.jsn?ww1boost=")

@@ -26,6 +26,27 @@ DEFAULT_MENU_OPTIONS = {
 
 ENTITIES_NOT_TO_BE_REMOVED = ["Boost button", "Device state"]
 
+DEVICE_STATUS = {
+    "de": {
+        0: "Standby",
+        1: "Heizen",
+        2: "Heizen Sicherstellung",
+        3: "Heizen beendet",
+        4: "Keine Verbindung / Deaktiviert",
+        5: "Fehler",
+        6: "Sperrzeit aktiv"
+    },
+    "en": {
+        0: "Standby",
+        1: "Heating",
+        2: "Heating Assurance",
+        3: "Heating Ended",
+        4: "No Connection / Disabled",
+        5: "Error",
+        6: "Blocking Time Active"
+    }
+}
+
 # 1. Spalte Sensorname
 # 2. Spalte Einheit
 # 3. Spalte Icon
