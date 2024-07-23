@@ -26,8 +26,8 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self._device_name = name
         self._name = "Device state"
-        self._switch = "device_state"
         self._host = host
+        self._switch = f"device_state_{self._host}"
         self._icon = "mdi:power"
         self._is_on = self.coordinator.data["setup"]["devmode"] if self.coordinator.data else False
         self._model = self.coordinator.data["info"]["device"]

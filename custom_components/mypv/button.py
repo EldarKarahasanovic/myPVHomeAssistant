@@ -30,7 +30,7 @@ class BoostButton(CoordinatorEntity, ButtonEntity):
         self._host = host
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
-        self._button = "boost_button"
+        self._button = f"boost_button_{self._host}"
 
     @property
     def name(self):
