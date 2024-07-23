@@ -1,5 +1,5 @@
-"""Button entity"""
-
+import aiohttp
+import logging
 from homeassistant.components.button import ButtonEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
@@ -7,24 +7,18 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import CONF_HOST
 
 from .const import DOMAIN, DATA_COORDINATOR
-from .coordinator import MYPVDataUpdateCoordinator
-
-import aiohttp
-import logging
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the boost button"""
-    coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
+    coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-    entities = []
-    boostButton = MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost button", entry.title)
-    ww1boostButton = MYPVButton(hass, coordinator, host, "mdi:content-save", "Save warmwater boost", entry.title)
-    entities.extend([boostButton, ww1boostButton])
+    entities = [
+        MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost button", entry.title),
+        MYPVButton(hass, coordinator, host, "mdi:content-save", "Save warmwater boost", entry.title)
+    ]
     async_add_entities(entities)
-
-    return True
 
 class MYPVButton(CoordinatorEntity, ButtonEntity):
     def __init__(self, hass, coordinator, host, icon, name, deviceName) -> None:
@@ -43,7 +37,7 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
     def name(self):
         return self._name
     
-    @property 
+    @property
     def icon(self):
         return self._icon
     
@@ -63,6 +57,7 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
         return "{} {}".format(self.serial_number, self._button)
 
     async def async_press(self) -> None:
+        """Handle button press."""
         async with aiohttp.ClientSession() as session:
             if self._name == "Boost button":
                 async with session.get(f"http://{self._host}/data.jsn") as response:
@@ -76,19 +71,29 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                     else:
                         _LOGGER.error("Failed to (de-)activate boost")
             else:
-                _LOGGER.error("ww1boost incoming")
+                # Search for the WWBoost number entity by its name
                 number_entity_id = None
+
                 for entity in self._hass.states.async_all():
-                    if entity.domain == "number":
-                        number_entity_id = entity.entity_id
-                        break
-                _LOGGER.warning(f"Number entity ID: {number_entity_id}")
-                if number_entity_id:
-                    number_state = await self._hass.states.async_get(number_entity_id)
-                    _LOGGER.warning(f"Number state: {number_state}")
-                    if number_state:
-                        number_value = number_state.state
+                    if entity.domain == "number" and "warmwassersicherstellung" in entity.entity_id:
+                        if entity.attributes.get("unique_id") == f"{self.serial_number} ww1boost{self._host}":
+                            number_entity_id = entity.entity_id
+                            break
+
+                if not number_entity_id:
+                    _LOGGER.error("No matching number entity found")
+                    return
+
+                _LOGGER.warning(f"Found number entity ID: {number_entity_id}")
+                number_state = self._hass.states.get(number_entity_id)
+                if number_state:
+                    try:
+                        number_value = float(number_state.state)
                         _LOGGER.warning(f"Number value: {number_value}")
                         async with session.get(f"http://{self._host}/data.jsn?ww1boost={number_value*10}") as response3:
                             if response3.status != 200:
                                 _LOGGER.error("Failed to save ww1boost settings")
+                    except ValueError:
+                        _LOGGER.error(f"Failed to convert number state to float: {number_state.state}")
+                else:
+                    _LOGGER.error(f"Failed to retrieve number state for entity_id: {number_entity_id}")
