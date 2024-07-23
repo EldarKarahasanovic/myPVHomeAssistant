@@ -18,18 +18,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the toggle switch."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
+    
+    # Retrieve existing entities
     existing_entities = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("entities", [])
+    
+    # Log details for debugging
     _LOGGER.warning(f"Existing Entities: {existing_entities}")
     _LOGGER.warning(f"Entry ID: {entry.entry_id}")
-    _LOGGER.warning(f"Entity unique ID: {entry.unique_id}")
-    if any(entity.unique_id == entry.entry_id for entity in existing_entities):
-        return True  
+    
+    # Check for existing entity with same unique_id
+    if any(entity.unique_id == entry.unique_id for entity in existing_entities):
+        _LOGGER.warning("Entity already set up, skipping.")
+        return False  # Indicate setup did not add any new entities
 
     _LOGGER.warning("Adding toggle switch")
-    async_add_entities([ToggleSwitch(coordinator, host, entry.title)], True)
+    new_entity = ToggleSwitch(coordinator, host, entry.title)
+    async_add_entities([new_entity], True)
+    
+    # Store the new entity in hass.data for future reference
+    hass.data.setdefault(DOMAIN, {}).setdefault(entry.entry_id, {}).setdefault("entities", []).append(new_entity)
     
     return True
-
 
 
 class ToggleSwitch(CoordinatorEntity, SwitchEntity):
