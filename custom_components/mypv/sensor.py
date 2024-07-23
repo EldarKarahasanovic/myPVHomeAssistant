@@ -18,15 +18,20 @@ _LOGGER = logging.getLogger(__name__)
 from homeassistant.helpers.entity_registry import async_get
 from homeassistant.core import HomeAssistant
 
+from homeassistant.helpers.entity_registry import async_get
+from homeassistant.core import HomeAssistant
+
 async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     """Add or update my-PV entry."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
 
+    # Konfigurierte Sensoren abrufen
     if CONF_MONITORED_CONDITIONS in entry.options:
         configured_sensors = entry.options[CONF_MONITORED_CONDITIONS]
     else:
         configured_sensors = entry.data[CONF_MONITORED_CONDITIONS]
 
+    # Entity Registry abrufen
     entity_registry = async_get(hass)
     existing_entities = {
         entity.entity_id: entity
@@ -36,15 +41,16 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     _LOGGER.warning(f"Existing entities: {existing_entities}")
 
     # Entitäten, die entfernt werden sollen
-    
     sensors_to_remove = [
         entity_id
         for entity_id in existing_entities
         if entity_id not in configured_sensors and entity_id not in ENTITIES_NOT_TO_BE_REMOVED
     ]
     _LOGGER.warning(f"Entities to remove: {sensors_to_remove}")
+
     # Entfernen der nicht mehr benötigten Entitäten
     for entity_id in sensors_to_remove:
+        _LOGGER.warning(f"Removing entity: {entity_id}")
         entity_registry.async_remove(entity_id)
 
     # Entitäten, die hinzugefügt werden sollen
@@ -54,12 +60,18 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
         if entity_id not in existing_entities:
             new_entity = MypvDevice(coordinator, sensor, entry.title)
             entities_to_add.append(new_entity)
-    _LOGGER.warning(f"Entites to add: {entities_to_add}")
+
+    _LOGGER.warning(f"Entities to add: {entities_to_add}")
+
     # Hinzufügen neuer Entitäten
     if entities_to_add:
-        _LOGGER.warning("Adding entites with async_add_entities")
+        _LOGGER.warning("Adding entities with async_add_entities")
         async_add_entities(entities_to_add)
-        _LOGGER.warning("Done adding without error! sensor.py")
+        _LOGGER.warning("Done adding entities without error!")
+
+    # Debugging: Überprüfen, ob noch Probleme bestehen
+    _LOGGER.warning(f"Entities after setup: {async_get(hass).entities}")
+
 
 class MypvDevice(CoordinatorEntity):
     """Representation of a my-PV device."""
