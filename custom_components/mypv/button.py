@@ -75,5 +75,11 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                                 _LOGGER.error("Failed to (de-)activate boost")
                     else:
                         _LOGGER.error("Failed to (de-)activate boost")
-            #else:
-                #async with session.get(f"http://{self._host}/data.jsn?ww1boost=")
+            else:
+                number_entity_id = f"number.warmwassersicherstellung_{self.coordinator.data["info"]["sn"]}"
+                state = self.hass.states.get(number_entity_id)
+                if state is not None:
+                    value = state.state
+                    async with session.get(f"http://{self._host}/data.jsn?ww1boost={value*10}") as response3:
+                        if response3.status != 200:
+                            _LOGGER.error("Failed to save ww1boost settings")
