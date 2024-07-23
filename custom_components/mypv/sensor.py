@@ -20,7 +20,11 @@ from homeassistant.helpers.entity_registry import async_get
 from homeassistant.helpers.entity_registry import async_get
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-async def async_setup_entry(hass, entry, async_add_entities):
+from homeassistant.helpers.entity_registry import async_get
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.core import HomeAssistant
+
+async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     """Add or update my-PV entry."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
 
@@ -30,36 +34,34 @@ async def async_setup_entry(hass, entry, async_add_entities):
         configured_sensors = entry.data[CONF_MONITORED_CONDITIONS]
 
     entity_registry = async_get(hass)
-    current_entities = [
-        entity
+    existing_entities = {
+        entity.entity_id: entity
         for entity in entity_registry.entities.values()
         if entity.platform == DOMAIN and entity.config_entry_id == entry.entry_id
+    }
+
+    # Entitäten, die entfernt werden sollen
+    sensors_to_remove = [
+        entity_id
+        for entity_id in existing_entities
+        if entity_id not in configured_sensors and entity_id not in ENTITIES_NOT_TO_BE_REMOVED
     ]
 
-    # Entferne nicht mehr konfigurierte Sensoren
-    sensors_to_remove = [
-        entity.entity_id
-        for entity in current_entities
-        if entity.entity_id not in configured_sensors and entity.original_name not in ENTITIES_NOT_TO_BE_REMOVED
-    ]
-    
+    # Entfernen der nicht mehr benötigten Entitäten
     for entity_id in sensors_to_remove:
         entity_registry.async_remove(entity_id)
 
-    # Füge neue Sensoren hinzu
-    entities = []
+    # Entitäten, die hinzugefügt werden sollen
+    entities_to_add = []
     for sensor in configured_sensors:
-        # Stelle sicher, dass der Sensor nicht bereits existiert
-        if not any(
-            entity.entity_id == f"{DOMAIN}.{sensor}"
-            for entity in current_entities
-        ):
+        entity_id = f"{DOMAIN}.{sensor}"
+        if entity_id not in existing_entities:
             new_entity = MypvDevice(coordinator, sensor, entry.title)
-            entities.append(new_entity)
-    
-    async_add_entities(entities)
+            entities_to_add.append(new_entity)
 
-
+    # Hinzufügen neuer Entitäten
+    if entities_to_add:
+        async_add_entities(entities_to_add)
 
 class MypvDevice(CoordinatorEntity):
     """Representation of a my-PV device."""
