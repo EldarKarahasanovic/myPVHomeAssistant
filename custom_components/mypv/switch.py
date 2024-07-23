@@ -41,15 +41,15 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         self._host = host
         self._switch = f"device_state_{self._host}"
         self._icon = "mdi:power"
-        self._is_on = False if self.coordinator.data["data"]["screen_mode_flag"] == 4 else True
+        self._is_on = self.coordinator.data["setup"]["devmode"] if self.coordinator.data else False
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
     
     @property
     def is_on(self):
-        _LOGGER.warning(f"CHeck is_on: {self.coordinator.data["data"]["screen_mode_flag"]}")
+        _LOGGER.warning(f"CHeck is_on: {self.coordinator.data["setup"]["devmode"]}")
         if self.coordinator.data:
-            self._is_on = False if self.coordinator.data["data"]["screen_mode_flag"] == 4 else True
+            self._is_on = self.coordinator.data["setup"]["devmode"]
         return self._is_on
 
     @property
@@ -78,15 +78,15 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     async def async_turn_on(self):
         _LOGGER.warning("switch turned on")
         await self.async_toggle_switch(1)
-        await self.coordinator.async_refresh()
         self._is_on = True
+        await self.coordinator.async_refresh()
         self.async_write_ha_state()
 
     async def async_turn_off(self):
         _LOGGER.warning("Switch turned off")
         await self.async_toggle_switch(0)
-        await self.coordinator.async_refresh()
         self._is_on = False
+        await self.coordinator.async_refresh()
         self.async_write_ha_state()
     
     async def async_toggle_switch(self, mode):
