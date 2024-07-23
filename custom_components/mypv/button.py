@@ -37,9 +37,9 @@ class BoostButton(CoordinatorEntity, ButtonEntity):
         """Initialize the button"""
         super().__init__(coordinator)
         self._icon = "mdi:heat-wave"
-        self._name = "Boost button"
-        self._device_name = name
         self._host = host
+        self._name = f"Boost button {self._host}"
+        self._device_name = name
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
         self._button = f"boost_button_{self._host}"
@@ -65,7 +65,7 @@ class BoostButton(CoordinatorEntity, ButtonEntity):
     @property
     def unique_id(self):
         """Return unique id based on device serial and variable."""
-        return "{}_{}".format(self.serial_number, self._button)
+        return "{} {}".format(self.serial_number, self._button)
 
     async def async_press(self) -> None:
         async with aiohttp.ClientSession() as session:
