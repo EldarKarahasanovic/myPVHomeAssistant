@@ -16,7 +16,6 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the boost button"""
-    _LOGGER.warning("Set up button")
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
     
@@ -38,9 +37,9 @@ class BoostButton(CoordinatorEntity, ButtonEntity):
         """Initialize the button"""
         super().__init__(coordinator)
         self._icon = "mdi:heat-wave"
-        self._host = host
-        self._name = f"Boost button {self._host}"
+        self._name = "Boost button"
         self._device_name = name
+        self._host = host
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
         self._button = f"boost_button_{self._host}"

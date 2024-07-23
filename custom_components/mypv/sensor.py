@@ -11,7 +11,6 @@ from homeassistant.const import (
 
 from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, ENTITIES_NOT_TO_BE_REMOVED
 from .coordinator import MYPVDataUpdateCoordinator
-from .switch import ToggleSwitch
 
 _LOGGER = logging.getLogger(__name__)
 
