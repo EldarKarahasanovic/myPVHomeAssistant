@@ -84,7 +84,7 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                         break
                 _LOGGER.warning(f"Number entity ID: {number_entity_id}")
                 if number_entity_id:
-                    number_state = self._hass.states.get(number_entity_id)
+                    number_state = await self._hass.states.async_get(number_entity_id)
                     _LOGGER.warning(f"Number state: {number_state}")
                     if number_state:
                         number_value = number_state.state
