@@ -5,7 +5,6 @@ import requests
 import json
 
 from async_timeout import timeout
-from homeassistant.util.dt import utcnow
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed

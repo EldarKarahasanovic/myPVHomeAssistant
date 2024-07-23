@@ -38,6 +38,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self.serial_number = self.coordinator.data["info"]["sn"]
         self._model = self.coordinator.data["info"]["device"]
         self._number = f"ww1boost_{self._host}"
+        self._entity_id = f"number.{self.name}_{self.serial_number}"
 
     @property
     def device_info(self):
@@ -53,6 +54,10 @@ class WWBoost(CoordinatorEntity, NumberEntity):
     def unique_id(self):
         """Return unique id based on device serial and variable."""
         return "{} {}".format(self.serial_number, self._number)
+    
+    @property
+    def entity_id(self):
+        return self._entity_id
 
     @property
     def name(self):
