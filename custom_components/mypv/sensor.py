@@ -57,7 +57,9 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     _LOGGER.warning(f"Entites to add: {entities_to_add}")
     # Hinzufügen neuer Entitäten
     if entities_to_add:
+        _LOGGER.warning("Adding entites with async_add_entities")
         async_add_entities(entities_to_add)
+        _LOGGER.warning("Done adding without error! sensor.py")
 
 class MypvDevice(CoordinatorEntity):
     """Representation of a my-PV device."""
