@@ -18,7 +18,7 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     """Set up the WWBoost number entity."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-    async_add_entities([WWBoost(coordinator, host, entry.title)], True)
+    async_add_entities([WWBoost(coordinator, host, entry.title)])
 
 class WWBoost(CoordinatorEntity, NumberEntity):
     """Representation of the WWBoost number entity"""
@@ -31,14 +31,14 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self._host = host
         self._min_value = DEFAULT_MIN_VALUE
         self._max_value = DEFAULT_MAX_VALUE
-        self._value = 50
+        self._value = 50 
         self._step = DEFAULT_STEP
         self._unit_of_measurement = UnitOfTemperature.CELSIUS
         self._mode = DEFAULT_MODE
         self.serial_number = self.coordinator.data["info"]["sn"]
         self._model = self.coordinator.data["info"]["device"]
         self._number = f"ww1boost_{self._host}"
-    
+
     @property
     def device_info(self):
         """Return information about the device."""
@@ -48,17 +48,12 @@ class WWBoost(CoordinatorEntity, NumberEntity):
             "manufacturer": "my-PV",
             "model": self._model,
         }
-
+    
     @property
     def unique_id(self):
-        """Return a unique id based on device serial and variable."""
-        return f"{self.serial_number}_{self._number}"
-    
-    @property
-    def entity_id(self):
-        """Return the entity id for this number."""
-        return f"number.warmwassersicherstellung_{self.serial_number}"
-    
+        """Return unique id based on device serial and variable."""
+        return "{} {}".format(self.serial_number, self._number)
+
     @property
     def name(self):
         """Return the display name of this entity."""

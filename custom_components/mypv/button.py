@@ -18,19 +18,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the boost button"""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-
     entities = []
-    boostButton = MYPVButton(coordinator, host, "mdi:heat-wave", "Boost button", entry.title)
-    ww1boostButton = MYPVButton(coordinator, host, "mdi:content-save", "Save warmwater boost", entry.title)
+    boostButton = MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost button", entry.title)
+    ww1boostButton = MYPVButton(hass, coordinator, host, "mdi:content-save", "Save warmwater boost", entry.title)
     entities.extend([boostButton, ww1boostButton])
     async_add_entities(entities)
 
     return True
 
 class MYPVButton(CoordinatorEntity, ButtonEntity):
-    def __init__(self, coordinator, host, icon, name, deviceName) -> None:
+    def __init__(self, hass, coordinator, host, icon, name, deviceName) -> None:
         """Initialize the button"""
         super().__init__(coordinator)
+        self._hass = hass
         self._icon = icon
         self._name = name
         self._device_name = deviceName
@@ -76,10 +76,16 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                     else:
                         _LOGGER.error("Failed to (de-)activate boost")
             else:
-                number_entity_id = f"number.warmwassersicherstellung_{self.coordinator.data["info"]["sn"]}"
-                state = self.hass.states.get(number_entity_id)
-                if state is not None:
-                    value = state.state
-                    async with session.get(f"http://{self._host}/data.jsn?ww1boost={value*10}") as response3:
-                        if response3.status != 200:
-                            _LOGGER.error("Failed to save ww1boost settings")
+                number_entity_id = None
+                for entity in self._hass.states.async_all():
+                    if entity.domain == "number":
+                        number_entity_id = entity.entity_id
+                        break
+                
+                if number_entity_id:
+                    number_state = self._hass.states.get(number_entity_id)
+                    if number_state:
+                        number_value = number_state.state
+                        async with session.get(f"http://{self._host}/data.jsn?ww1boost={number_value*10}") as response3:
+                            if response3.status != 200:
+                                _LOGGER.error("Failed to save ww1boost settings")
