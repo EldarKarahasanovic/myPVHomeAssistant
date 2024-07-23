@@ -18,7 +18,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the boost button"""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
+    
+    existing_entities = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("entities", [])
+    _LOGGER.warning(f"Existing Entities button: {existing_entities}")
+    _LOGGER.warning(f"Entry ID button: {entry.entry_id}")
+    _LOGGER.warning(f"Entry UNIQUE ID button: {entry.unique_id}")
+    if any(entity.unique_id == entry.entry_id for entity in existing_entities):
+        _LOGGER.warning("Boost button already exists")
+        return True 
+
+    _LOGGER.warning("Adding boost button")
     async_add_entities([BoostButton(coordinator, host, entry.title)], True)
+
+    return True
 
 class BoostButton(CoordinatorEntity, ButtonEntity):
     def __init__(self, coordinator, host, name) -> None:

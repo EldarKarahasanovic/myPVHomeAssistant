@@ -23,8 +23,8 @@ from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_MONITORED_CONDITIONS = [
-    "temp1", 
-    "screen_mode_flag"
+    "screen_mode_flag",
+    "temp1"
 ]
 
 @callback
@@ -280,7 +280,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED_CONDITIONS
+                    CONF_MONITORED_CONDITIONS, default = DEFAULT_MONITORED_CONDITIONS
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
@@ -305,8 +305,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
         return MypvOptionsFlowHandler(config_entry)
     
-
-
 class MypvOptionsFlowHandler(config_entries.OptionsFlow):
     """Handles options flow"""
 
