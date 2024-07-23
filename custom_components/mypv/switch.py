@@ -47,6 +47,7 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     
     @property
     def is_on(self):
+        _LOGGER.warning(f"CHeck is_on: {self.coordinator.data["setup"]["devmode"]}")
         if self.coordinator.data:
             self._is_on = self.coordinator.data["setup"]["devmode"]
         return self._is_on
@@ -75,12 +76,14 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         return "{} {}".format(self.serial_number, self._switch)
     
     async def async_turn_on(self):
+        _LOGGER.warning("switch turned on")
         await self.async_toggle_switch(1)
         self._is_on = True
         await self.coordinator.async_refresh()
         self.async_write_ha_state()
 
     async def async_turn_off(self):
+        _LOGGER.warning("Switch turned off")
         await self.async_toggle_switch(0)
         self._is_on = False
         await self.coordinator.async_refresh()
