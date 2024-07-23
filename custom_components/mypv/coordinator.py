@@ -42,7 +42,9 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
             if self._info is None:
                 self._info = self.info_update()
 
-            self._setup = self.setup_update()
+            if self._setup is None or self._next_update < utcnow().timestamp():
+                self._next_update = utcnow().timestamp() + 120  # 86400
+                self._setup = self.setup_update()
 
             return {
                 "data": data,

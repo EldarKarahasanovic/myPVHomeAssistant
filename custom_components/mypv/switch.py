@@ -41,15 +41,15 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         self._host = host
         self._switch = f"device_state_{self._host}"
         self._icon = "mdi:power"
-        self._is_on = self.coordinator.data["setup"]["devmode"] if self.coordinator.data else False
+        self._is_on = True if self.coordinator.data["data"]["screen_mode_flag"] == 4 else False
         self._model = self.coordinator.data["info"]["device"]
         self.serial_number = self.coordinator.data["info"]["sn"]
     
     @property
     def is_on(self):
-        _LOGGER.warning(f"CHeck is_on: {self.coordinator.data["setup"]["devmode"]}")
+        _LOGGER.warning(f"CHeck is_on: {self.coordinator.data["data"]["screen_mode_flag"]}")
         if self.coordinator.data:
-            self._is_on = self.coordinator.data["setup"]["devmode"]
+            self._is_on = True if self.coordinator.data["data"]["screen_mode_flag"] == 4 else False
         return self._is_on
 
     @property
