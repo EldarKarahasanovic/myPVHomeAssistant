@@ -76,16 +76,19 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                     else:
                         _LOGGER.error("Failed to (de-)activate boost")
             else:
+                _LOGGER.error("ww1boost incoming")
                 number_entity_id = None
                 for entity in self._hass.states.async_all():
                     if entity.domain == "number":
                         number_entity_id = entity.entity_id
                         break
-                
+                _LOGGER.warning(f"Number entity ID: {number_entity_id}")
                 if number_entity_id:
                     number_state = self._hass.states.get(number_entity_id)
+                    _LOGGER.warning(f"Number state: {number_state}")
                     if number_state:
                         number_value = number_state.state
+                        _LOGGER.warning(f"Number value: {number_value}")
                         async with session.get(f"http://{self._host}/data.jsn?ww1boost={number_value*10}") as response3:
                             if response3.status != 200:
                                 _LOGGER.error("Failed to save ww1boost settings")
