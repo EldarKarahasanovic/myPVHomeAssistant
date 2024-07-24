@@ -26,7 +26,6 @@ class WWBoost(CoordinatorEntity, NumberEntity):
     def __init__(self, coordinator, host, name):
         """Initialize the number entity."""
         super().__init__(coordinator)
-        self._name = "Warmwassersicherstellung"
         self._device_name = name
         self._host = host
         self._min_value = DEFAULT_MIN_VALUE
@@ -38,6 +37,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self.serial_number = self.coordinator.data["info"]["sn"]
         self._model = self.coordinator.data["info"]["device"]
         self._number = f"ww1boost_{self._host}"
+        self._name = f"Warmwassersicherstellung {self.serial_number}"
 
     @property
     def device_info(self):

@@ -23,6 +23,7 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
         self._info = None
         self._setup = None
         self._next_update = 0
+        # self._data = 
         update_interval = timedelta(seconds=10)
 
         super().__init__(

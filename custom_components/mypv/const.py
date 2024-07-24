@@ -174,4 +174,5 @@ SENSOR_TYPES = {
     "p9s_upd_state": ["Acthor 9 Power supply update state", None, "mdi:update", "data"],
     "mainmode": ["Operating Mode", None, "", "setup"],
     "mode9s": ["Operating Mode Acthor 9", None, "", "setup"],
+    "Datas": ["WiFi Meter Daten", None, "", "data"],
 }
