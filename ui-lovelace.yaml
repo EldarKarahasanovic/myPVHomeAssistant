@@ -3,6 +3,7 @@
 # Write this code to configuration.yaml:
 # lovelace:
 #   mode: yaml
+#choose your entities
 
 views:
   - title: Home
