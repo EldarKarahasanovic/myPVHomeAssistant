@@ -74,7 +74,6 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
             else:
                 # Search for the WWBoost number entity by its name
                 number_entity_id = None
-                await self.get_entities_for_device(self._hass)
 
                 for entity in self._hass.states.async_all():
                     if entity.domain == "number" and "warmwassersicherstellung" in entity.entity_id:
@@ -101,9 +100,3 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                         _LOGGER.error(f"Failed to convert number state to float: {number_state.state}")
                 else:
                     _LOGGER.error(f"Failed to retrieve number state for entity_id: {number_entity_id}")
-
-    async def get_entities_for_device(self, hass):
-        entity_registry = async_get(hass)
-        device_entities = []
-        for entity in entity_registry.values():
-            _LOGGER.warning(f"Entity: {entity}")
