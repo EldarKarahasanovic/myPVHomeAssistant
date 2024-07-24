@@ -12,8 +12,6 @@ from homeassistant.const import (
 
 DOMAIN = "mypv"
 
-PLATFORMS = [Platform.SENSOR]
-
 DATA_COORDINATOR = "coordinator"
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
