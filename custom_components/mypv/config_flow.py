@@ -15,7 +15,6 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.const import (
     CONF_HOST,
     CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
 )
 from homeassistant.core import HomeAssistant, callback
 

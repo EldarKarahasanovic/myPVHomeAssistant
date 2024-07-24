@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching my-PV data."""
 
-    def __init__(self, hass: HomeAssistant, *, config: dict):
+    def __init__(self, hass: HomeAssistant, *, config: dict, options: dict):
         """Initialize my-PV coordinator."""
         self._host = config[CONF_HOST]
         self._info = None
