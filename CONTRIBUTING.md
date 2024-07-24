@@ -1,6 +1,6 @@
 # Contributing to my-PV Home Assistant integration
 
-Thank you for your interest in contributing to [Project Name]! These guidelines will help you make contributions smoothly and effectively.
+Thank you for your interest in contributing to my-PV Home Assistant integration! These guidelines will help you make contributions smoothly and effectively.
 
 ## How to Contribute
 
