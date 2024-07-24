@@ -30,7 +30,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self._host = host
         self._min_value = DEFAULT_MIN_VALUE
         self._max_value = DEFAULT_MAX_VALUE
-        self._value = self.coordinator.data["setup"]["ww1boost"]
+        self._value = float(self.coordinator.data["setup"]["ww1boost"] / 10)
         self._step = DEFAULT_STEP
         self._unit_of_measurement = UnitOfTemperature.CELSIUS
         self._mode = DEFAULT_MODE
