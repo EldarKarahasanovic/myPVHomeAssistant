@@ -21,6 +21,14 @@ DEFAULT_MENU_OPTIONS = {
         "automatic_scan": "Automatic Scan in Your Network"
     }
 
+DEFAULT_MIN_VALUE = 30
+
+DEFAULT_MAX_VALUE = 80
+
+DEFAULT_STEP = 0.1
+
+DEFAULT_MODE = "slider"
+
 WIFI_METER_NAME = "Wi-Fi Meter"
 
 DEVICE_STATUS = {

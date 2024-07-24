@@ -3,16 +3,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import UnitOfTemperature, CONF_HOST
 
-from .const import DOMAIN, DATA_COORDINATOR
+from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP
 from .coordinator import MYPVDataUpdateCoordinator
 import logging
 
 _LOGGER = logging.getLogger(__name__)
-
-DEFAULT_MIN_VALUE = 30
-DEFAULT_MAX_VALUE = 70
-DEFAULT_STEP = 0.1
-DEFAULT_MODE = "slider"
 
 async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     """Set up the WWBoost number entity."""
@@ -95,4 +90,4 @@ class WWBoost(CoordinatorEntity, NumberEntity):
             self._value = value
             self.async_write_ha_state()
         else:
-            _LOGGER.error("Value %s is out of range [%s, %s]", value, self._min_value, self._max_value)
+            _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")

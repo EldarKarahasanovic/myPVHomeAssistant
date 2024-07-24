@@ -24,7 +24,7 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
         self._info = None
         self._setup = None
         self._next_update = 0
-        # self._data = await self.get_datasource(self._host)
+        self._data = "data.jsn"
         update_interval = timedelta(seconds=10)
 
         super().__init__(
@@ -36,7 +36,7 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict:
         """Fetch data from NZBGet."""
-
+    
         def _update_data() -> dict:
             """Fetch data from NZBGet via sync functions."""
             data = self.data_update()
@@ -87,6 +87,8 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
         except:
             pass
     
+
+
     async def get_datasource(self, host):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://{host}/mypv_dev.jsn") as response:
