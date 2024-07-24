@@ -186,8 +186,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
             self._device_name = await self.check_ip_device(self._host)
-            _LOGGER.warning(f"Device name: {self._device_name}")
-            await self._get_sensor(self._host)
+            if self._device_name == WIFI_METER_NAME:
+                await self._get_wifi_meter_sensors()
+            else:
+                await self._get_sensor(self._host)
             return await self.async_step_sensors()        
         
         select_device_schema = vol.Schema({
@@ -287,11 +289,13 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     'selected_sensors': selected_sensors,
                 },
             )
+        
+        default_monitored_conditions = [] if self._device_name == WIFI_METER_NAME else DEFAULT_MONITORED_CONDITIONS
 
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default = DEFAULT_MONITORED_CONDITIONS
+                    CONF_MONITORED_CONDITIONS, default = default_monitored_conditions
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
