@@ -76,12 +76,11 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                 number_entity_id = None
 
                 for entity in self._hass.states.async_all():
-                    if entity.domain == "number" and "warmwassersicherstellung" in entity.entity_id:
+                    if entity.domain == "number" and f"warmwassersicherstellung_{self.serial_number}" in entity.entity_id:
                         _LOGGER.warning(f"Entity: {entity}")
                         _LOGGER.warning(f"UNIQUE ID: {entity.attributes.get("unique_id")}")
-                        if entity.attributes.get("unique_id") == f"{self.serial_number} ww1boost_{self._host}":
-                            number_entity_id = entity.entity_id
-                            break
+                        number_entity_id = entity.entity_id
+                        break
 
                 if not number_entity_id:
                     _LOGGER.error("No matching number entity found")
