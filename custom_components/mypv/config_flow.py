@@ -185,7 +185,8 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._errors = {}
         if user_input is not None:
             self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
-            _LOGGER.warning(f"SELECT SENSORS KEYS: {self._host}")
+            self._device_name = await self.check_ip_device(self._host)
+            _LOGGER.warning(f"Device name: {self._device_name}")
             await self._get_sensor(self._host)
             return await self.async_step_sensors()        
         
