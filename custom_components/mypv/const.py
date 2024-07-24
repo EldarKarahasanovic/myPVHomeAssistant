@@ -7,7 +7,6 @@ from homeassistant.const import (
     UnitOfElectricCurrent,
     UnitOfFrequency,
     UnitOfTemperature,
-    Platform
 )
 
 DOMAIN = "mypv"
