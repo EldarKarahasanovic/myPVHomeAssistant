@@ -15,6 +15,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.const import (
     CONF_HOST,
     CONF_MONITORED_CONDITIONS,
+    CONF_DEVICE,
 )
 from homeassistant.core import HomeAssistant, callback
 
@@ -287,6 +288,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_MONITORED_CONDITIONS: selected_sensors,
                     '_filtered_sensor_types': self._filtered_sensor_types,
                     'selected_sensors': selected_sensors,
+                    CONF_DEVICE: self._device_name,
                 },
             )
         

@@ -4,9 +4,9 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_HOST, CONF_DEVICE
 
-from .const import DOMAIN, DATA_COORDINATOR
+from .const import DOMAIN, DATA_COORDINATOR, WIFI_METER_NAME
 from .coordinator import MYPVDataUpdateCoordinator
 
 import logging
@@ -16,9 +16,11 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the toggle switch."""
-    coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
-    host = entry.data[CONF_HOST]
-    async_add_entities([ToggleSwitch(coordinator, host, entry.title)], True)
+    device_name = entry.data[CONF_DEVICE]
+    if device_name != WIFI_METER_NAME:
+        coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
+        host = entry.data[CONF_HOST]
+        async_add_entities([ToggleSwitch(coordinator, host, entry.title)], True)
 
 class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     def __init__(self, coordinator, host, name):
