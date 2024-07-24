@@ -177,6 +177,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._errors = {}
         if user_input is not None:
             self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
+            _LOGGER.warning(f"SELECT SENSORS KEYS: {self._devices.keys()}, VALUES: {self._devices.values()}")
             await self._get_sensor(self._host)
             return await self.async_step_sensors()        
         
@@ -290,17 +291,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="sensors", data_schema=setup_schema, errors=self._errors
         )
 
-
-    async def async_step_import(self, user_input=None):
-        """Import a config entry."""
-        if self._host_in_configuration_exists(user_input[CONF_HOST]):
-            return self.async_abort(reason="host_exists")
-        self._host = user_input[CONF_HOST]
-        if not await self.check_ip_device(self._host):
-            return self.async_abort(reason="invalid_ip_address")
-        await self._get_sensor(self._host)
-        return await self.async_step_sensors(user_input)
-    
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
