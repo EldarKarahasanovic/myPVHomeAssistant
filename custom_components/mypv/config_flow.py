@@ -123,6 +123,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if device:
                     if not self._host_in_configuration_exists(self._host):
                         self._devices[self._host] = f"{device} ({self._host})"
+                        _LOGGER.warning(f"DEVICE 1 IP KNOWN: {device}")
                         await self._get_sensor(self._host)
                         return await self.async_step_sensors()
                     else:

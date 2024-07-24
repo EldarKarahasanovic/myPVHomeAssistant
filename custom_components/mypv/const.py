@@ -7,6 +7,7 @@ from homeassistant.const import (
     UnitOfElectricCurrent,
     UnitOfFrequency,
     UnitOfTemperature,
+    UnitOfEnergy,
 )
 
 DOMAIN = "mypv"
@@ -168,7 +169,7 @@ SENSOR_TYPES = {
     "ps_state": ["Power supply state", None, "", "data"],
     "cur_ip": ["IP", None, "mdi:ip-network", "data"],
     "cur_sn": ["Serial number", None, "mdi:numeric", "data"],
-    "cur_gw": ["Gateway", None, "mdi:router-network", "data"],
+    "cur_gw": ["Gateway", None, "mdi:router-network", "data"], 
     "cur_dns": ["DNS", None, "", "data"],
     "fwversionlatest": ["latest Firmware version", None, "mdi:numeric", "data"],
     "psversionlatest": ["latest Power supply version", None, "mdi:numeric", "data"],
@@ -179,5 +180,30 @@ SENSOR_TYPES = {
     "p9s_upd_state": ["Acthor 9 Power supply update state", None, "mdi:update", "data"],
     "mainmode": ["Operating Mode", None, "", "setup"],
     "mode9s": ["Operating Mode Acthor 9", None, "", "setup"],
-    "Datas": ["WiFi Meter Daten", None, "", "data"],
+}
+
+WIFI_METER_SENSOR_TYPES = {
+    "method": ["Method", None, "", "data"],
+    "mac": ["MAC address", None, "mdi:numeric", "data"],
+    "version": ["Version", None, "", "data"],
+    "server": ["Server", None, "", "data"],
+    "SN": ["Serial number", None, "mdi:numeric", "data"],
+    "0;0": ["Voltage L1", UnitOfElectricPotential.VOLT, "mdi:flash", "data"],
+    "0;1": ["Current L1", UnitOfElectricCurrent.AMPERE, "mdi:current-ac", "data"],
+    "0;2": ["Power L1", UnitOfPower.WATT, "mdi:lightning-bolt", "data"],
+    "0;3": ["Grid reference L1", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-export", "data"],
+    "0;4": ["Grid feed L1", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-import", "data"],
+    "0;5": ["Frequency L1", UnitOfFrequency.HERTZ, "mdi:sine-wave", "data"],
+    "1;0": ["Voltage L1", UnitOfElectricPotential.VOLT, "mdi:flash", "data"],
+    "1;1": ["Current L2", UnitOfElectricCurrent.AMPERE, "mdi:current-ac", "data"],
+    "1;2": ["Power L2", UnitOfPower.WATT, "mdi:lightning-bolt", "data"],
+    "1;3": ["Grid reference L2", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-export", "data"],
+    "1;4": ["Grid feed L2", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-import", "data"],
+    "1;5": ["Frequency L2", UnitOfFrequency.HERTZ, "mdi:sine-wave", "data"],
+    "2;0": ["Voltage L3", UnitOfElectricPotential.VOLT, "mdi:flash", "data"],
+    "2;1": ["Current L3", UnitOfElectricCurrent.AMPERE, "mdi:current-ac", "data"],
+    "2;2": ["Power L3", UnitOfPower.WATT, "mdi:lightning-bolt", "data"],
+    "2;3": ["Grid reference L3", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-export", "data"],
+    "2;4": ["Grid feed L3", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-import", "data"],
+    "2;5": ["Frequency L3", UnitOfFrequency.HERTZ, "mdi:sine-wave", "data"],
 }
