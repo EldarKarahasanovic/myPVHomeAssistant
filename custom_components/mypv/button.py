@@ -72,13 +72,12 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                     else:
                         _LOGGER.error("Failed to (de-)activate boost")
             else:
-                # Search for the WWBoost number entity by its name
                 number_entity_id = None
 
                 for entity in self._hass.states.async_all():
-                    if entity.domain == "number" and f"warmwassersicherstellung_{self.serial_number}" in entity.entity_id:
-                        _LOGGER.warning(f"Entity: {entity}")
-                        _LOGGER.warning(f"UNIQUE ID: {entity.attributes.get("unique_id")}")
+                    ip_address = f"{self._host}"
+                    ip_address_w_underscore = ip_address.replace(".", "_")
+                    if entity.domain == "number" and f"warmwassersicherstellung_{ip_address_w_underscore}" in entity.entity_id:
                         number_entity_id = entity.entity_id
                         break
 
@@ -86,12 +85,10 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                     _LOGGER.error("No matching number entity found")
                     return
 
-                _LOGGER.warning(f"Found number entity ID: {number_entity_id}")
                 number_state = self._hass.states.get(number_entity_id)
                 if number_state:
                     try:
                         number_value = float(number_state.state)
-                        _LOGGER.warning(f"Number value: {number_value}")
                         async with session.get(f"http://{self._host}/data.jsn?ww1boost={number_value*10}") as response3:
                             if response3.status != 200:
                                 _LOGGER.error("Failed to save ww1boost settings")

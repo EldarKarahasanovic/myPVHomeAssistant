@@ -3,13 +3,14 @@ from datetime import timedelta
 import logging
 import requests
 import json
+import aiohttp
 
 from async_timeout import timeout
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN
+from .const import DOMAIN, WIFI_METER_NAME
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
         self._info = None
         self._setup = None
         self._next_update = 0
-        # self._data = 
+        # self._data = await self.get_datasource(self._host)
         update_interval = timedelta(seconds=10)
 
         super().__init__(
@@ -85,3 +86,15 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
             return info
         except:
             pass
+    
+    async def get_datasource(self, host):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://{host}/mypv_dev.jsn") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("device") == WIFI_METER_NAME:
+                        return "monitorjson"
+                    else:
+                        return "data.jsn"
+                else:
+                    _LOGGER.error("Failed to connect to your device")

@@ -21,7 +21,7 @@ DEFAULT_MENU_OPTIONS = {
         "automatic_scan": "Automatic Scan in Your Network"
     }
 
-ENTITIES_NOT_TO_BE_REMOVED = ["Boost button", "Device state"]
+WIFI_METER_NAME = "Wi-Fi Meter"
 
 DEVICE_STATUS = {
     "de": {

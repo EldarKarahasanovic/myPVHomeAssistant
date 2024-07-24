@@ -34,17 +34,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
         if entity.platform == DOMAIN and entity.config_entry_id == entry.entry_id:
             current_entities.append(entity)
 
-
-    _LOGGER.warning(f"Current Entities: {current_entities}")
-
     sensors_to_remove = []
     for entity in current_entities:
         if entity.entity_id not in configured_sensors:
             sensors_to_remove.append(entity)
-
-
-    _LOGGER.warning(f"Sensors to remove: {sensors_to_remove}")
-    _LOGGER.warning(f"Configured sensors: {configured_sensors}")
 
     for entity in sensors_to_remove:
         entity_registry.async_remove(entity.entity_id)
@@ -53,10 +46,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     for sensor in configured_sensors:
         new_entity = MypvDevice(coordinator, sensor, entry.title)
         entities.append(new_entity)
-    _LOGGER.warning(f"Adding Entities: {entities}")
     
     async_add_entities(entities)
-
 
 class MypvDevice(CoordinatorEntity):
     """Representation of a my-PV device."""
