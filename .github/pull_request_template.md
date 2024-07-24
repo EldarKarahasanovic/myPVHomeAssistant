@@ -14,7 +14,6 @@ Please check the type of change your PR is introducing:
 - [ ] New feature
 - [ ] Enhancement
 - [ ] Refactoring
-- [ ] Documentation update
 - [ ] Other (please specify): __________
 
 ## How Has This Been Tested?
