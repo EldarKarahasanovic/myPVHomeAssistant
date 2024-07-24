@@ -80,6 +80,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except asyncio.TimeoutError as e:
                 _LOGGER.error(f"Timeout error occurred on {host}: {e}")
                 self._filtered_sensor_types = {}
+    
+    async def _get_wifi_meter_sensors(self):
+        for key, value in WIFI_METER_SENSOR_TYPES.items():
+            self._filtered_sensor_types[key] = value[0]
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
@@ -126,7 +130,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         self._devices[self._host] = f"{device} ({self._host})"
                         self._device_name = device
                         if self._device_name == WIFI_METER_NAME:
-                            self._filtered_sensor_types = WIFI_METER_SENSOR_TYPES
+                            await self._get_wifi_meter_sensors()
                         else:
                             await self._get_sensor(self._host)
                         return await self.async_step_sensors()
