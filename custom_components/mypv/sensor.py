@@ -9,7 +9,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
-from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, ENTITIES_NOT_TO_BE_REMOVED, DEVICE_STATUS
+from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, DEVICE_STATUS
 from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
