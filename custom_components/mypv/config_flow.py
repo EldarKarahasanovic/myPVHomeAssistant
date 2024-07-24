@@ -18,7 +18,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 
-from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS
+from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS, WIFI_METER_NAME, WIFI_METER_SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._host = None
         self._filtered_sensor_types = {}
         self._devices = {}
+        self._device_name = None
 
     def _host_in_configuration_exists(self, host) -> bool:
         """Return True if host exists in configuration."""
@@ -123,8 +124,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if device:
                     if not self._host_in_configuration_exists(self._host):
                         self._devices[self._host] = f"{device} ({self._host})"
-                        _LOGGER.warning(f"DEVICE 1 IP KNOWN: {device}")
-                        await self._get_sensor(self._host)
+                        self._device_name = device
+                        if self._device_name == WIFI_METER_NAME:
+                            self._filtered_sensor_types = WIFI_METER_SENSOR_TYPES
+                        else:
+                            await self._get_sensor(self._host)
                         return await self.async_step_sensors()
                     else:
                         self._errors[CONF_HOST] = "host_already_configured"
