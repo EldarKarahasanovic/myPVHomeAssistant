@@ -9,7 +9,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
-from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, DEVICE_STATUS
+from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, DEVICE_STATUS, WIFI_METER_NAME, WIFI_METER_SENSOR_TYPES
 from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -55,14 +55,21 @@ class MypvDevice(CoordinatorEntity):
     def __init__(self, coordinator, sensor_type, name):
         """Initialize the sensor."""
         super().__init__(coordinator)
-        self._sensor = SENSOR_TYPES[sensor_type][0]
+        if WIFI_METER_SENSOR_TYPES in name:
+            self._sensor = WIFI_METER_SENSOR_TYPES[sensor_type][0]
+            self._unit_of_measurement = WIFI_METER_SENSOR_TYPES[self.type][1]
+            self._icon = WIFI_METER_SENSOR_TYPES[self.type][2]
+            self._data_source = WIFI_METER_SENSOR_TYPES[sensor_type][3]
+        else:
+            self._sensor = SENSOR_TYPES[sensor_type][0]
+            self._unit_of_measurement = SENSOR_TYPES[self.type][1]
+            self._icon = SENSOR_TYPES[self.type][2]
+            self._data_source = SENSOR_TYPES[sensor_type][3]
+
         self._name = name
         self.type = sensor_type
-        self._data_source = SENSOR_TYPES[sensor_type][3]
         self.coordinator = coordinator
         self._last_value = None
-        self._unit_of_measurement = SENSOR_TYPES[self.type][1]
-        self._icon = SENSOR_TYPES[self.type][2]
         self.serial_number = self.coordinator.data["info"]["sn"]
         self.model = self.coordinator.data["info"]["device"]
         _LOGGER.debug(self.coordinator)
