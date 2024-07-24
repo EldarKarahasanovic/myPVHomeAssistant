@@ -18,7 +18,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up the toggle switch."""
     coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
-    _LOGGER.warning("Adding toggle switch")
     async_add_entities([ToggleSwitch(coordinator, host, entry.title)], True)
 
 class ToggleSwitch(CoordinatorEntity, SwitchEntity):
@@ -26,7 +25,7 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         """Initialize the switch"""
         super().__init__(coordinator)
         self._device_name = name
-        self._name = "Device state"
+        self._name = "Device State"
         self._host = host
         self._switch = f"device_state_{self._host}"
         self._icon = "mdi:power"
@@ -36,7 +35,6 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
     
     @property
     def is_on(self):
-        _LOGGER.warning(f"CHeck is_on: {self.coordinator.data["setup"]["devmode"]}")
         if self.coordinator.data:
             self._is_on = self.coordinator.data["setup"]["devmode"]
         return self._is_on
@@ -65,14 +63,12 @@ class ToggleSwitch(CoordinatorEntity, SwitchEntity):
         return "{} {}".format(self.serial_number, self._switch)
     
     async def async_turn_on(self):
-        _LOGGER.warning("switch turned on")
         await self.async_toggle_switch(1)
         self._is_on = True
         await self.coordinator.async_refresh()
         self.async_write_ha_state()
 
     async def async_turn_off(self):
-        _LOGGER.warning("Switch turned off")
         await self.async_toggle_switch(0)
         self._is_on = False
         await self.coordinator.async_refresh()

@@ -16,8 +16,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
     host = entry.data[CONF_HOST]
     entities = [
-        MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost button", entry.title),
-        MYPVButton(hass, coordinator, host, "mdi:content-save", "Save warmwater boost", entry.title)
+        MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost Button", entry.title),
+        MYPVButton(hass, coordinator, host, "mdi:content-save", "Single Boost", entry.title)
     ]
     async_add_entities(entities)
 
@@ -77,7 +77,7 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
                 for entity in self._hass.states.async_all():
                     ip_address = f"{self._host}"
                     ip_address_w_underscore = ip_address.replace(".", "_")
-                    if entity.domain == "number" and f"warmwassersicherstellung_{ip_address_w_underscore}" in entity.entity_id:
+                    if entity.domain == "number" and f"hot_water_assurance_{ip_address_w_underscore}" in entity.entity_id:
                         number_entity_id = entity.entity_id
                         break
 

@@ -37,7 +37,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self.serial_number = self.coordinator.data["info"]["sn"]
         self._model = self.coordinator.data["info"]["device"]
         self._number = f"ww1boost_{self._host}"
-        self._name = f"Warmwassersicherstellung {self._host}"
+        self._name = f"Hot Water Assurance {self._host}"
 
     @property
     def device_info(self):
