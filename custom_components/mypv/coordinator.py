@@ -61,7 +61,7 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_info(self, session):
         try:
-            timeout = ClientTimeout(total=5)
+            timeout = ClientTimeout(total=10)
             async with session.get(f"http://{self._host}/mypv_dev.jsn", timeout=timeout) as response:
                 if response.status == 200:
                     info = await response.json()
