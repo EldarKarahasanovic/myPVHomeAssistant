@@ -100,7 +100,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
             self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 500) / 10
             self.async_write_ha_state()
 
-    async def async_set_value(self, value: float):
+    async def async_set_native_value(self, value: float):
         """Set a new value for this number."""
         if self._min_value <= value <= self._max_value:
             self._value = value
