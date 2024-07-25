@@ -1,13 +1,13 @@
 from homeassistant.components.number import NumberEntity
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.const import UnitOfTemperature, CONF_HOST, CONF_DEVICE
-
+from homeassistant.helpers.event import async_track_time_interval
 from datetime import timedelta
-from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME, MIN_TIME_BETWEEN_UPDATES
-from .coordinator import MYPVDataUpdateCoordinator
 import logging
+
+from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME
+from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,15 +29,14 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self._host = host
         self._min_value = DEFAULT_MIN_VALUE
         self._max_value = DEFAULT_MAX_VALUE
-        self._value = float(self.coordinator.data["setup"]["ww1boost"] / 10)
+        self._value = float(self.coordinator.data.get("setup", {}).get("ww1boost", 500)) / 10
         self._step = DEFAULT_STEP
         self._unit_of_measurement = UnitOfTemperature.CELSIUS
         self._mode = DEFAULT_MODE
-        self.serial_number = self.coordinator.data["info"]["sn"]
-        self._model = self.coordinator.data["info"]["device"]
+        self.serial_number = self.coordinator.data.get("info", {}).get("sn", "unknown")
+        self._model = self.coordinator.data.get("info", {}).get("device", "unknown")
         self._number = f"ww1boost_{self._host}"
         self._name = f"Hot Water Assurance {self._host}"
-        async_track_time_interval(self.hass, self._async_poll, MIN_TIME_BETWEEN_UPDATES)
 
     @property
     def device_info(self):
@@ -89,19 +88,24 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         """Return mode of this entity"""
         return self._mode
 
+    async def async_added_to_hass(self):
+        """Handle entity which will be added to hass."""
+        await super().async_added_to_hass()
+        # Schedule regular updates
+        async_track_time_interval(self.hass, self._async_poll, timedelta(seconds=10))
+
+    async def _async_poll(self, now):
+        """Poll for updates."""
+        _LOGGER.warning("Polling data number")
+        await self.coordinator.async_request_refresh()
+        if self.coordinator.last_update_success:
+            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
+            self.async_write_ha_state()
+
     async def async_set_value(self, value: float):
         """Set a new value for this number."""
-        _LOGGER.warning("set value number")
         if self._min_value <= value <= self._max_value:
             self._value = value
             self.async_write_ha_state()
         else:
             _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")
-    
-    async def _async_poll(self, now):
-        """Poll for updates."""
-        _LOGGER.warning("Updating number")
-        await self.coordinator.async_request_refresh()
-        if self.coordinator.last_update_success:
-            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
-            self.async_write_ha_state()
