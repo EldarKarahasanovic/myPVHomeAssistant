@@ -86,8 +86,9 @@ class MypvDevice(CoordinatorEntity):
             if "Datas" in self.type:
                 wifiMeterList = self.type.split(";")
                 state = self.coordinator.data[self._data_source][self.type][int(wifiMeterList[1])][int(wifiMeterList[2])]
-            else:
-                state = self.coordinator.data[self._data_source][self.type]
+                return state
+            
+            state = self.coordinator.data[self._data_source][self.type]
             
             if self.type == "screen_mode_flag":
                 state = DEVICE_STATUS.get(self.hass.config.language, "en")[state]
