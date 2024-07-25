@@ -15,7 +15,7 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     if device_name != WIFI_METER_NAME:
         coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
         host = entry.data[CONF_HOST]
-        async_add_entities([WWBoost(coordinator, host, entry.title)], True)
+        async_add_entities([WWBoost(coordinator, host, entry.title)])
 
 class WWBoost(CoordinatorEntity, NumberEntity):
     """Representation of the WWBoost number entity"""
@@ -95,7 +95,9 @@ class WWBoost(CoordinatorEntity, NumberEntity):
             _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")
     
     async def async_update(self):
-        _LOGGER.warning("Update number entity")
-        await self.coordinator.async_request_refresh()
-        self._value = self.coordinator.data.get("setup").get("ww1boost") / 10
-        # self.async_write_ha_state()
+        """Fetch new state data for this entity."""
+        if self.coordinator.last_update_success:
+            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
+            self.async_write_ha_state()
+        else:
+            _LOGGER.error("Failed to update coordinator data")
