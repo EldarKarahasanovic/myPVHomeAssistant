@@ -71,8 +71,17 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
                 else:
                     _LOGGER.error(f"Failed to connect to your my-PV device (status code: {response.status})")
                     return None
-        except aiohttp.ClientError as e:
-            _LOGGER.error(f"ClientError in async_update_info: {e}")
+        except aiohttp.ClientConnectionError as e:
+            _LOGGER.error(f"ClientConnectionError in async_update_info: {e}")
+            return None
+        except aiohttp.ClientPayloadError as e:
+            _LOGGER.error(f"ClientPayloadError in async_update_info: {e}")
+            return None
+        except aiohttp.ClientResponseError as e:
+            _LOGGER.error(f"ClientResponseError in async_update_info: {e}")
+            return None
+        except aiohttp.ClientTimeout as e:
+            _LOGGER.error(f"ClientTimeout error in async_update_info: {e}")
             return None
         except asyncio.TimeoutError as e:
             _LOGGER.error(f"TimeoutError in async_update_info: {e}")

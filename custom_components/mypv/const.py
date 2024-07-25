@@ -194,7 +194,7 @@ WIFI_METER_SENSOR_TYPES = {
     "Datas;0;3": ["Grid reference L1", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-export", "data"],
     "Datas;0;4": ["Grid feed L1", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-import", "data"],
     "Datas;0;5": ["Frequency L1", UnitOfFrequency.HERTZ, "mdi:sine-wave", "data"],
-    "Datas;1;0": ["Voltage L1", UnitOfElectricPotential.VOLT, "mdi:flash", "data"],
+    "Datas;1;0": ["Voltage L2", UnitOfElectricPotential.VOLT, "mdi:flash", "data"],
     "Datas;1;1": ["Current L2", UnitOfElectricCurrent.AMPERE, "mdi:current-ac", "data"],
     "Datas;1;2": ["Power L2", UnitOfPower.WATT, "mdi:lightning-bolt", "data"],
     "Datas;1;3": ["Grid reference L2", UnitOfEnergy.KILO_WATT_HOUR, "mdi:transmission-tower-export", "data"],
