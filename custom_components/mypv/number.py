@@ -93,3 +93,8 @@ class WWBoost(CoordinatorEntity, NumberEntity):
             self.async_write_ha_state()
         else:
             _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")
+    
+    async def async_update(self):
+        await self.coordinator.async_request_refresh()
+        self._value = self.coordinator.get("setup").get("ww1boost") / 10
+        self.async_write_ha_state()
