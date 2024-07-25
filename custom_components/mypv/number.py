@@ -98,4 +98,4 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         _LOGGER.warning("Update number entity")
         await self.coordinator.async_request_refresh()
         self._value = self.coordinator.data.get("setup").get("ww1boost") / 10
-        self.async_write_ha_state()
+        # self.async_write_ha_state()
