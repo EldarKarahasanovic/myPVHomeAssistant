@@ -1,6 +1,6 @@
-# my-PV Home Assistant Integration (BETA)
+# my-PV Home Assistant Integration
 
-Home Assistant integration for my-PV (under development, not released yet)
+Home Assistant integration for my-PV
 
 <a href="https://buymeacoffee.com/melik787" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee"></a>
 
@@ -23,8 +23,6 @@ After that it should be available on HACS --> Search my-PV --> Install my-PV
 ### Configuration
 
 The integration is configurated via UI (recommended) or via configuration.yaml 
-
-BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 
 To implement recommended user interface: <br>
 In dashboard go to: edit -> 3 dots -> raw- configuration editor <br>
