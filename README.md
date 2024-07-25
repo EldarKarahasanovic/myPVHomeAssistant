@@ -84,7 +84,7 @@ Preview:<br>
 - PR to the Home Assistant Core
 
 ### 2-IN PROGRESS:
-
+- Release to HACS
 
 ### 3-DONE:
 - Monitoring of all status values
