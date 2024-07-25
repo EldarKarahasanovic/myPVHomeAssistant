@@ -86,7 +86,8 @@ class MypvDevice(CoordinatorEntity):
         try:
             if "Datas" in self.type:
                 wifiMeterList = self.type.split(";")
-                state = self.coordinator.data[self._data_source][self.type][int(wifiMeterList[1])][int(wifiMeterList[2])]
+                _LOGGER.warning(f"wifiMeterList: {wifiMeterList}")
+                state = self.coordinator.data[self._data_source][int(wifiMeterList[0])][int(wifiMeterList[1])][int(wifiMeterList[2])]
                 return state
             
             state = self.coordinator.data[self._data_source][self.type]
