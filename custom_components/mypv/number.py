@@ -96,6 +96,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
     
     async def async_update(self):
         """Fetch new state data for this entity."""
+        _LOGGER.warning("Update number")
         if self.coordinator.last_update_success:
             self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
             self.async_write_ha_state()
