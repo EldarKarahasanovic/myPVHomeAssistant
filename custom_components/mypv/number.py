@@ -15,7 +15,7 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     if device_name != WIFI_METER_NAME:
         coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
         host = entry.data[CONF_HOST]
-        async_add_entities([WWBoost(coordinator, host, entry.title)])
+        async_add_entities([WWBoost(coordinator, host, entry.title)], True)
 
 class WWBoost(CoordinatorEntity, NumberEntity):
     """Representation of the WWBoost number entity"""
