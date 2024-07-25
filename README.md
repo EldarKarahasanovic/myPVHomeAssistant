@@ -10,28 +10,27 @@ This repo is actually forked from <a href="https://github.com/zaubererty/homeass
 
 ### Installation
 
+There are 2 ways how to install thw my-PV Home Assistant integration
+
+- Manual installation
 Copy this folder to `config/custom_components/mypv/`.
 
-### HACS
-You need to install HACS. <a href="https://hacs.xyz/docs/setup/download/" target="_blank">Download HACS</a>
-
+- HACS
+You need to install HACS. <a href="https://hacs.xyz/docs/setup/download/" target="_blank">Download HACS</a><br>
 After that go to the 3 dots on HACS --> Custom Repositories --> paste the link of this repository --> select Integration as type --> click on Add
-After that it should be available on HACS --> Search my-PV
-Install my-PV 
+After that it should be available on HACS --> Search my-PV --> Install my-PV 
 
 ### Configuration
 
-The integration is configurated via UI
+The integration is configurated via UI (recommended) or via configuration.yaml 
 
 BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 
 ### 1-TODO:
 - clean up and testing code
-- Test other devices (my-PV WiFi Meter, other devices work)
 - PR to the Home Assistant Core
 
 ### 2-IN PROGRESS:
-- Display screen mode of my-PV devices
 
 ### 3-DONE:
 - Monitoring of all status values
@@ -42,3 +41,7 @@ BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 - Filtering sensors based on device type
 - Autodiscovery (inofficial)
 - Configuring sensors
+- Added hot water assurance, configurable via slider and "Single Boost" button 
+- Display screen mode of my-PV devices
+- Test other devices (my-PV WiFi Meter, AC ELWA-E)
+
