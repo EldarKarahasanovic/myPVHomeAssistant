@@ -1,7 +1,7 @@
 {
   "domain": "mypv",
   "name": "my-PV",
-  "codeowners": ["@zaubererty", "@techolutions", "@EldarKarahasanovic", "@melik787"],
+  "codeowners": ["@zaubererty", "@EldarKarahasanovic", "@melik787"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/EldarKarahasanovic/myPVHomeAssistant",
