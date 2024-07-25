@@ -44,6 +44,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     entities = []
     for sensor in configured_sensors:
+        _LOGGER.warning(f"Sensor: {sensor}")
         new_entity = MypvDevice(coordinator, sensor, entry.title)
         entities.append(new_entity)
     
