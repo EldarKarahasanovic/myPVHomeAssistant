@@ -44,7 +44,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     entities = []
     for sensor in configured_sensors:
-        _LOGGER.warning(f"Sensor: {sensor}")
         new_entity = MypvDevice(coordinator, sensor, entry.title)
         entities.append(new_entity)
     
@@ -86,7 +85,6 @@ class MypvDevice(CoordinatorEntity):
         try:
             if "Datas" in self.type:
                 wifiMeterList = self.type.split(";")
-                _LOGGER.warning(f"wifiMeterList: {wifiMeterList}")
                 state = self.coordinator.data[self._data_source][wifiMeterList[0]][int(wifiMeterList[1])][int(wifiMeterList[2])]
                 return state
             
