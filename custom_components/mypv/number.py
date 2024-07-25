@@ -91,21 +91,20 @@ class WWBoost(CoordinatorEntity, NumberEntity):
     async def async_added_to_hass(self):
         """Handle entity which will be added to hass."""
         await super().async_added_to_hass()
-        # Schedule regular updates
         async_track_time_interval(self.hass, self._async_poll, timedelta(seconds=10))
 
     async def _async_poll(self, now):
         """Poll for updates."""
-        _LOGGER.warning("Polling data number")
         await self.coordinator.async_request_refresh()
         if self.coordinator.last_update_success:
-            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
+            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 500) / 10
             self.async_write_ha_state()
 
     async def async_set_value(self, value: float):
         """Set a new value for this number."""
         if self._min_value <= value <= self._max_value:
             self._value = value
+            await self.coordinator.async_refresh()
             self.async_write_ha_state()
         else:
             _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")
