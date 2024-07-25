@@ -1,9 +1,9 @@
 from homeassistant.components.number import NumberEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.const import UnitOfTemperature, CONF_HOST
+from homeassistant.const import UnitOfTemperature, CONF_HOST, CONF_DEVICE
 
-from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP
+from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME
 from .coordinator import MYPVDataUpdateCoordinator
 import logging
 
@@ -11,9 +11,11 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
     """Set up the WWBoost number entity."""
-    coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
-    host = entry.data[CONF_HOST]
-    async_add_entities([WWBoost(coordinator, host, entry.title)])
+    device_name = entry.data[CONF_DEVICE]
+    if device_name != WIFI_METER_NAME:
+        coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
+        host = entry.data[CONF_HOST]
+        async_add_entities([WWBoost(coordinator, host, entry.title)])
 
 class WWBoost(CoordinatorEntity, NumberEntity):
     """Representation of the WWBoost number entity"""

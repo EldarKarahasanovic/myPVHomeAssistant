@@ -4,22 +4,23 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.helpers.entity_registry import async_get
-from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_HOST, CONF_DEVICE
 
-from .const import DOMAIN, DATA_COORDINATOR
+from .const import DOMAIN, DATA_COORDINATOR, WIFI_METER_NAME
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up the boost button"""
-    coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
-    host = entry.data[CONF_HOST]
-    entities = [
-        MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost Button", entry.title),
-        MYPVButton(hass, coordinator, host, "mdi:content-save", "Single Boost", entry.title)
-    ]
-    async_add_entities(entities)
+    device_name = entry.data[CONF_DEVICE]
+    if device_name != WIFI_METER_NAME:
+        coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
+        host = entry.data[CONF_HOST]
+        entities = [
+            MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost Button", entry.title),
+            MYPVButton(hass, coordinator, host, "mdi:thermometer", "Single Boost", entry.title)
+        ]
+        async_add_entities(entities)
 
 class MYPVButton(CoordinatorEntity, ButtonEntity):
     def __init__(self, hass, coordinator, host, icon, name, deviceName) -> None:

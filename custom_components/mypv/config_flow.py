@@ -15,10 +15,11 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.const import (
     CONF_HOST,
     CONF_MONITORED_CONDITIONS,
+    CONF_DEVICE,
 )
 from homeassistant.core import HomeAssistant, callback
 
-from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS
+from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS, WIFI_METER_NAME, WIFI_METER_SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,6 +48,7 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._host = None
         self._filtered_sensor_types = {}
         self._devices = {}
+        self._device_name = None
 
     def _host_in_configuration_exists(self, host) -> bool:
         """Return True if host exists in configuration."""
@@ -79,6 +81,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except asyncio.TimeoutError as e:
                 _LOGGER.error(f"Timeout error occurred on {host}: {e}")
                 self._filtered_sensor_types = {}
+    
+    async def _get_wifi_meter_sensors(self):
+        for key, value in WIFI_METER_SENSOR_TYPES.items():
+            self._filtered_sensor_types[key] = value[0]
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
@@ -123,7 +129,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if device:
                     if not self._host_in_configuration_exists(self._host):
                         self._devices[self._host] = f"{device} ({self._host})"
-                        await self._get_sensor(self._host)
+                        self._device_name = device
+                        if self._device_name == WIFI_METER_NAME:
+                            await self._get_wifi_meter_sensors()
+                        else:
+                            await self._get_sensor(self._host)
                         return await self.async_step_sensors()
                     else:
                         self._errors[CONF_HOST] = "host_already_configured"
@@ -176,7 +186,11 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._errors = {}
         if user_input is not None:
             self._host = list(self._devices.keys())[list(self._devices.values()).index(user_input["device"])]
-            await self._get_sensor(self._host)
+            self._device_name = await self.check_ip_device(self._host)
+            if self._device_name == WIFI_METER_NAME:
+                await self._get_wifi_meter_sensors()
+            else:
+                await self._get_sensor(self._host)
             return await self.async_step_sensors()        
         
         select_device_schema = vol.Schema({
@@ -274,13 +288,16 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_MONITORED_CONDITIONS: selected_sensors,
                     '_filtered_sensor_types': self._filtered_sensor_types,
                     'selected_sensors': selected_sensors,
+                    CONF_DEVICE: self._device_name,
                 },
             )
+        
+        default_monitored_conditions = [] if self._device_name == WIFI_METER_NAME else DEFAULT_MONITORED_CONDITIONS
 
         setup_schema = vol.Schema(
             {
                 vol.Required(
-                    CONF_MONITORED_CONDITIONS, default = DEFAULT_MONITORED_CONDITIONS
+                    CONF_MONITORED_CONDITIONS, default = default_monitored_conditions
                 ): cv.multi_select(self._filtered_sensor_types),
             }
         )
@@ -289,17 +306,6 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="sensors", data_schema=setup_schema, errors=self._errors
         )
 
-
-    async def async_step_import(self, user_input=None):
-        """Import a config entry."""
-        if self._host_in_configuration_exists(user_input[CONF_HOST]):
-            return self.async_abort(reason="host_exists")
-        self._host = user_input[CONF_HOST]
-        if not await self.check_ip_device(self._host):
-            return self.async_abort(reason="invalid_ip_address")
-        await self._get_sensor(self._host)
-        return await self.async_step_sensors(user_input)
-    
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
