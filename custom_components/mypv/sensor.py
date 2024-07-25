@@ -57,13 +57,13 @@ class MypvDevice(CoordinatorEntity):
         super().__init__(coordinator)
         if WIFI_METER_NAME in name:
             self._sensor = WIFI_METER_SENSOR_TYPES[sensor_type][0]
-            self._unit_of_measurement = WIFI_METER_SENSOR_TYPES[self.type][1]
-            self._icon = WIFI_METER_SENSOR_TYPES[self.type][2]
+            self._unit_of_measurement = WIFI_METER_SENSOR_TYPES[sensor_type][1]
+            self._icon = WIFI_METER_SENSOR_TYPES[sensor_type][2]
             self._data_source = WIFI_METER_SENSOR_TYPES[sensor_type][3]
         else:
             self._sensor = SENSOR_TYPES[sensor_type][0]
-            self._unit_of_measurement = SENSOR_TYPES[self.type][1]
-            self._icon = SENSOR_TYPES[self.type][2]
+            self._unit_of_measurement = SENSOR_TYPES[sensor_type][1]
+            self._icon = SENSOR_TYPES[sensor_type][2]
             self._data_source = SENSOR_TYPES[sensor_type][3]
 
         self._name = name
