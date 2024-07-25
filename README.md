@@ -26,11 +26,65 @@ The integration is configurated via UI (recommended) or via configuration.yaml
 
 BETA * BETA * BETA - Not finished yet - BETA * BETA * BETA
 
+To implement recommended user interface: <br>
+In dashboard go to: edit -> 3 dots -> raw- configuration editor <br>
+Paste following code and replace entities based on your device:
+<details>
+<summary>Code</summary>
+  
+```ruby
+views:
+  - title: Home
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: gauge
+            entity: sensor.ac_elwa_2_192_168_12_51_power1_solar
+            needle: false
+            max: 3500
+          - type: history-graph
+            entities:
+              - entity: sensor.ac_elwa_2_192_168_12_51_temperatur_1
+          - type: entities
+            entities:
+              - entity: number.hot_water_assurance_192_168_12_51
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            icon_height: 30px
+            entity: button.single_boost
+            icon: mdi:thermometer
+          - type: horizontal-stack
+            cards:
+              - type: button
+                tap_action:
+                  action: toggle
+                entity: switch.device_state
+                icon_height: 40px
+                name: Power
+                margin: 5px
+              - type: button
+                tap_action:
+                  action: toggle
+                entity: button.boost_button
+                icon_height: 40px
+                name: Boost
+          - type: entity
+            entity: sensor.ac_elwa_2_192_168_12_51_screen_mode
+            name: Status
+```
+</details>
+Preview:<br>
+<img height = "600" width ="350" src = "https://github.com/user-attachments/assets/4d01b350-48f4-4f63-8885-3d4442b7d389">
+
 ### 1-TODO:
 - clean up and testing code
 - PR to the Home Assistant Core
 
 ### 2-IN PROGRESS:
+
 
 ### 3-DONE:
 - Monitoring of all status values
