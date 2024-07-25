@@ -3,10 +3,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import UnitOfTemperature, CONF_HOST, CONF_DEVICE
 from homeassistant.helpers.event import async_track_time_interval
-from datetime import timedelta
 import logging
 
-from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME
+from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME, MIN_TIME_BETWEEN_UPDATES
 from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -91,9 +90,9 @@ class WWBoost(CoordinatorEntity, NumberEntity):
     async def async_added_to_hass(self):
         """Handle entity which will be added to hass."""
         await super().async_added_to_hass()
-        async_track_time_interval(self.hass, self._async_poll, timedelta(seconds=10))
+        async_track_time_interval(self.hass, self._async_poll, MIN_TIME_BETWEEN_UPDATES)
 
-    async def _async_poll(self, now):
+    async def _async_poll(self):
         """Poll for updates."""
         await self.coordinator.async_request_refresh()
         if self.coordinator.last_update_success:
