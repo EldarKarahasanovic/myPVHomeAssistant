@@ -112,7 +112,7 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
                     data = await response.json()
                     return data
                 else:
-                    _LOGGER.error(f"Failed to connect to your my-PV device (status code: {response.status})")
+                    _LOGGER.error(f"Failed to connect to your my-PV device (status code: {response.status})") 
                     return None
         except aiohttp.ClientError as e:
             _LOGGER.error(f"ClientError in async_update_data: {e}")
