@@ -88,17 +88,9 @@ class WWBoost(CoordinatorEntity, NumberEntity):
 
     async def async_set_value(self, value: float):
         """Set a new value for this number."""
+        _LOGGER.warning("set value number")
         if self._min_value <= value <= self._max_value:
             self._value = value
             self.async_write_ha_state()
         else:
             _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")
-    
-    async def async_update(self):
-        """Fetch new state data for this entity."""
-        _LOGGER.warning("Update number")
-        if self.coordinator.last_update_success:
-            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
-            self.async_write_ha_state()
-        else:
-            _LOGGER.error("Failed to update coordinator data")
