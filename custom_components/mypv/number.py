@@ -92,7 +92,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         await super().async_added_to_hass()
         async_track_time_interval(self.hass, self._async_poll, MIN_TIME_BETWEEN_UPDATES)
 
-    async def _async_poll(self):
+    async def _async_poll(self, now):
         """Poll for updates."""
         await self.coordinator.async_request_refresh()
         if self.coordinator.last_update_success:
