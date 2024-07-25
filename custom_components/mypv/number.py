@@ -1,9 +1,11 @@
 from homeassistant.components.number import NumberEntity
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.const import UnitOfTemperature, CONF_HOST, CONF_DEVICE
 
-from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME
+from datetime import timedelta
+from .const import DOMAIN, DATA_COORDINATOR, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE, DEFAULT_MODE, DEFAULT_STEP, WIFI_METER_NAME, MIN_TIME_BETWEEN_UPDATES
 from .coordinator import MYPVDataUpdateCoordinator
 import logging
 
@@ -35,6 +37,7 @@ class WWBoost(CoordinatorEntity, NumberEntity):
         self._model = self.coordinator.data["info"]["device"]
         self._number = f"ww1boost_{self._host}"
         self._name = f"Hot Water Assurance {self._host}"
+        async_track_time_interval(self.hass, self._async_poll, MIN_TIME_BETWEEN_UPDATES)
 
     @property
     def device_info(self):
@@ -94,3 +97,11 @@ class WWBoost(CoordinatorEntity, NumberEntity):
             self.async_write_ha_state()
         else:
             _LOGGER.error(f"Value {value} is out of range [{self._min_value}, {self._max_value}]")
+    
+    async def _async_poll(self, now):
+        """Poll for updates."""
+        _LOGGER.warning("Updating number")
+        await self.coordinator.async_request_refresh()
+        if self.coordinator.last_update_success:
+            self._value = self.coordinator.data.get("setup", {}).get("ww1boost", 0) / 10
+            self.async_write_ha_state()
