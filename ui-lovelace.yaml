@@ -3,28 +3,44 @@
 # Write this code to configuration.yaml:
 # lovelace:
 #   mode: yaml
+#choose your entities
 
 views:
-  - title: my-PV Dashboard
-    path: view
+  - title: Home
     cards:
       - type: vertical-stack
         cards:
           - type: gauge
-            entity: sensor.ac_elwa_2_1_temperatur_1
-            severity:
-              green: 40
-              yellow: 50
-              red: 70
+            entity: sensor.ac_elwa_2_192_168_12_51_power1_solar
+            needle: false
           - type: history-graph
             entities:
-              - entity: sensor.ac_elwa_2_1_frequency
-              - entity: sensor.ac_elwa_2_1_temperatur_1
-            hours_to_show: 1
-          - show_name: true
-            show_icon: true
-            type: button
+              - entity: sensor.ac_elwa_2_192_168_12_51_temperatur_1
+          - type: entities
+            entities:
+              - entity: number.warmwassersicherstellung_1601502407030150
+          - type: button
             tap_action:
-              action: toggle   
-            entity: switch.ww1boost_switch
-            icon: mdi:water-boiler-auto
+              action: toggle
+            entity: button.save_warmwater_boost
+            name: Save Warmwater Boost
+            icon_height: 10px
+          - type: horizontal-stack
+            cards:
+              - type: button
+                tap_action:
+                  action: toggle
+                entity: switch.device_state
+                icon_height: 40px
+                name: Power
+                margin: 5px
+              - type: button
+                tap_action:
+                  action: toggle
+                entity: button.boost_button
+                icon_height: 40px
+                name: Boost
+          - type: entity
+            entity: sensor.ac_elwa_2_192_168_12_51_screen_mode
+            name: Status
+
