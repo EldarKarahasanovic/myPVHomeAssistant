@@ -18,7 +18,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         host = entry.data[CONF_HOST]
         entities = [
             MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost Button", entry.title),
-            MYPVButton(hass, coordinator, host, "mdi:content-save", "Single Boost", entry.title)
+            MYPVButton(hass, coordinator, host, "mdi:thermometer", "Single Boost", entry.title)
         ]
         async_add_entities(entities)
 
