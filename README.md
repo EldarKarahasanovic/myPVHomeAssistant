@@ -93,7 +93,7 @@ Preview:<br>
 - Filtering sensors based on device type
 - Autodiscovery (inofficial)
 - Configuring sensors
-- Added hot water assurance, configurable via slider and "Single Boost" button 
+- Added hot water assurance, configurable via slider and "Save" button 
 - Display screen mode of my-PV devices
 - Test other devices (my-PV WiFi Meter, AC ELWA-E)
 
