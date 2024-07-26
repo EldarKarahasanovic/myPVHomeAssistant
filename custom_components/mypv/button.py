@@ -62,20 +62,17 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
         """Handle button press."""
         async with aiohttp.ClientSession() as session:
             if self._name == BOOST_BUTTON_NAME:
-                _LOGGER.warning("Boost Button pressed")
                 async with session.get(f"http://{self._host}/data.jsn") as response:
                     if response.status == 200:
                         data = await response.json()
                         boostActive = data.get("boostactive")
                         newBoost = not boostActive
-                        _LOGGER.warning(f"Setting boost {newBoost}")
                         async with session.get(f"http://{self._host}/data.jsn?bststrt={int(newBoost)}") as response2:
                             if response2.status != 200:
                                 _LOGGER.error("Failed to (de-)activate boost")
                     else:
                         _LOGGER.error("Failed to (de-)activate boost")
             else:
-                _LOGGER.warning("Save button pressed")
                 number_entity_id = None
 
                 for entity in self._hass.states.async_all():
