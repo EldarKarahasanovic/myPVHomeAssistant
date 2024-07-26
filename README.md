@@ -30,7 +30,7 @@ Paste following code and replace entities based on your device:
 <details>
 <summary>Code</summary>
   
-```ruby
+```yaml
 views:
   - title: Home
     cards:
