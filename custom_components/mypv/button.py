@@ -61,7 +61,7 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
     async def async_press(self) -> None:
         """Handle button press."""
         async with aiohttp.ClientSession() as session:
-            if self._name == "Boost button":
+            if self._name == "Boost Button":
                 async with session.get(f"http://{self._host}/data.jsn") as response:
                     if response.status == 200:
                         data = await response.json()
