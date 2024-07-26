@@ -32,6 +32,8 @@ DEFAULT_MODE = "slider"
 
 WIFI_METER_NAME = "Wi-Fi Meter"
 
+BOOST_BUTTON_NAME = "Boost Button"
+
 DEVICE_STATUS = {
     "de": {
         0: "Standby",

@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import CONF_HOST, CONF_DEVICE
 
-from .const import DOMAIN, DATA_COORDINATOR, WIFI_METER_NAME
+from .const import DOMAIN, DATA_COORDINATOR, WIFI_METER_NAME, BOOST_BUTTON_NAME
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         coordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
         host = entry.data[CONF_HOST]
         entities = [
-            MYPVButton(hass, coordinator, host, "mdi:heat-wave", "Boost Button", entry.title),
+            MYPVButton(hass, coordinator, host, "mdi:heat-wave", BOOST_BUTTON_NAME, entry.title),
             MYPVButton(hass, coordinator, host, "mdi:thermometer", "Single Boost", entry.title)
         ]
         async_add_entities(entities)
@@ -61,7 +61,7 @@ class MYPVButton(CoordinatorEntity, ButtonEntity):
     async def async_press(self) -> None:
         """Handle button press."""
         async with aiohttp.ClientSession() as session:
-            if self._name == "Boost Button":
+            if self._name == BOOST_BUTTON_NAME:
                 async with session.get(f"http://{self._host}/data.jsn") as response:
                     if response.status == 200:
                         data = await response.json()
