@@ -63,6 +63,14 @@ DEVICE_STATUS = {
     }
 }
 
+DEVICE_STATUS_AC_ELWA_E = {
+    3: "Standby",
+    4: "Heating",
+    5: "Heating Ended",
+    21: "Device Deactivated",
+    204: "Hardware Defect"
+}
+
 # 1. Spalte Sensorname
 # 2. Spalte Einheit
 # 3. Spalte Icon
