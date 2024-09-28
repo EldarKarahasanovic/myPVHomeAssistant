@@ -92,7 +92,10 @@ class MypvDevice(CoordinatorEntity):
             
             if self.type == "screen_mode_flag":
                 state = DEVICE_STATUS.get(self.hass.config.language, "en")[state]
-                    
+            
+            if self.type == "status":
+                state = DEVICE_STATUS.get(self.hass.config.language, "en")[state]
+
             if self.type == "power_act":
                 relOut = int(self.coordinator.data[self._data_source].get("rel1_out", None))
                 loadNom = int(self.coordinator.data[self._data_source].get("load_nom", None))
