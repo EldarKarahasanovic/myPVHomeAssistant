@@ -19,14 +19,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 
-from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS, WIFI_METER_NAME, WIFI_METER_SENSOR_TYPES
+from .const import DOMAIN, SENSOR_TYPES, DEFAULT_MENU_OPTIONS, WIFI_METER_NAME, WIFI_METER_SENSOR_TYPES, DEFAULT_MONITORED_CONDITIONS, AC_ELWA_E_NAME
 
 _LOGGER = logging.getLogger(__name__)
-
-DEFAULT_MONITORED_CONDITIONS = [
-    "screen_mode_flag",
-    "temp1"
-]
 
 @callback
 def mypv_entries(hass: HomeAssistant):
@@ -292,7 +287,10 @@ class MypvConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 },
             )
         
-        default_monitored_conditions = [] if self._device_name == WIFI_METER_NAME else DEFAULT_MONITORED_CONDITIONS
+        monitored_conditions_key = "default"
+        if self._device_name == WIFI_METER_NAME or self._device_name == AC_ELWA_E_NAME:
+            monitored_conditions_key = self._device_name
+        default_monitored_conditions = DEFAULT_MONITORED_CONDITIONS[monitored_conditions_key]
 
         setup_schema = vol.Schema(
             {
