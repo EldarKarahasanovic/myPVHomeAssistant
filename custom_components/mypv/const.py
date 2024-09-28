@@ -32,6 +32,14 @@ DEFAULT_MODE = "slider"
 
 WIFI_METER_NAME = "Wi-Fi Meter"
 
+AC_ELWA_E_NAME = "AC ELWA-E"
+
+DEFAULT_MONITORED_CONDITIONS = {
+    "default": ["screen_mode_flag", "temp1"], 
+    WIFI_METER_NAME: [], 
+    AC_ELWA_E_NAME: ["status", "temp1"]
+}
+
 BOOST_BUTTON_NAME = "Boost Button"
 
 DEVICE_STATUS = {
