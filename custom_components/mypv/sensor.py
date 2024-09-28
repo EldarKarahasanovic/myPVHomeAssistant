@@ -94,10 +94,11 @@ class MypvDevice(CoordinatorEntity):
                 state = DEVICE_STATUS.get(self.hass.config.language, "en")[state]
             
             if self.type == "status":
-                if state in DEVICE_STATUS_AC_ELWA_E.keys:
-                    state = DEVICE_STATUS_AC_ELWA_E[state]
+                temp = int(state)
+                if temp in DEVICE_STATUS_AC_ELWA_E.keys:
+                    state = DEVICE_STATUS_AC_ELWA_E[temp]
                 else:
-                    state = "Unknown with code: " + state
+                    state = "Unknown with code: " + temp
 
             if self.type == "power_act":
                 relOut = int(self.coordinator.data[self._data_source].get("rel1_out", None))
