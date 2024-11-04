@@ -64,11 +64,15 @@ DEVICE_STATUS = {
 }
 
 DEVICE_STATUS_AC_ELWA_E = {
+    1: "No communication",
     2: "Heat",
     3: "Standby",
     4: "Boost heat",
     5: "Heat finished",
     9: "Setup",
+    20: "Legionella boost",
+    21: "Device disabled",
+    22: "Device blocked",
     201: "Error Overtemp Fuse blown",
     202: "Error Overtemp measured",
     203: "Error Overtemp Electronics",
