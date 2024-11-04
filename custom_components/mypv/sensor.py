@@ -9,26 +9,35 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
-from .const import SENSOR_TYPES, DOMAIN, DATA_COORDINATOR, DEVICE_STATUS, WIFI_METER_NAME, WIFI_METER_SENSOR_TYPES, DEVICE_STATUS_AC_ELWA_E
+from .const import (
+    SENSOR_TYPES,
+    DOMAIN,
+    DATA_COORDINATOR,
+    DEVICE_STATUS,
+    WIFI_METER_NAME,
+    WIFI_METER_SENSOR_TYPES,
+    DEVICE_STATUS_AC_ELWA_E,
+)
 from .coordinator import MYPVDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 from homeassistant.helpers.entity_registry import async_get
 
+
 async def async_setup_entry(hass, entry, async_add_entities):
     """Add or update my-PV entry."""
-    coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][DATA_COORDINATOR]
+    coordinator: MYPVDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
+        DATA_COORDINATOR
+    ]
 
     if CONF_MONITORED_CONDITIONS in entry.options:
         configured_sensors = entry.options[CONF_MONITORED_CONDITIONS]
     else:
         configured_sensors = entry.data[CONF_MONITORED_CONDITIONS]
 
-   
     entity_registry = async_get(hass)
 
-    
     current_entities = []
     for entity in entity_registry.entities.values():
         if entity.platform == DOMAIN and entity.config_entry_id == entry.entry_id:
@@ -46,8 +55,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
     for sensor in configured_sensors:
         new_entity = MypvDevice(coordinator, sensor, entry.title)
         entities.append(new_entity)
-    
+
     async_add_entities(entities)
+
 
 class MypvDevice(CoordinatorEntity):
     """Representation of a my-PV device."""
@@ -85,28 +95,36 @@ class MypvDevice(CoordinatorEntity):
         try:
             if "Datas" in self.type:
                 wifiMeterList = self.type.split(";")
-                state = self.coordinator.data[self._data_source][wifiMeterList[0]][int(wifiMeterList[1])][int(wifiMeterList[2])]
+                state = self.coordinator.data[self._data_source][wifiMeterList[0]][
+                    int(wifiMeterList[1])
+                ][int(wifiMeterList[2])]
                 return state
-            
+
             state = self.coordinator.data[self._data_source][self.type]
-            
+
             if self.type == "screen_mode_flag":
                 state = DEVICE_STATUS.get(self.hass.config.language, "en")[state]
-            
+
             if self.type == "status":
                 state = DEVICE_STATUS_AC_ELWA_E.get(int(state))
 
             if self.type == "power_act":
-                relOut = int(self.coordinator.data[self._data_source].get("rel1_out", None))
-                loadNom = int(self.coordinator.data[self._data_source].get("load_nom", None))
+                relOut = int(
+                    self.coordinator.data[self._data_source].get("rel1_out", None)
+                )
+                loadNom = int(
+                    self.coordinator.data[self._data_source].get("load_nom", None)
+                )
                 if relOut is not None and loadNom is not None:
                     state = (relOut * loadNom) + int(state)
-    
+
             self._last_value = state
         except Exception as ex:
             _LOGGER.error(ex)
             state = self._last_value
         if state is None:
+            return state
+        if not isinstance(state, int):
             return state
         if self._unit_of_measurement == UnitOfFrequency.HERTZ:
             return state / 1000
