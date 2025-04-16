@@ -12,10 +12,10 @@ This repo is actually forked from <a href="https://github.com/zaubererty/homeass
 
 There are 2 ways how to install thw my-PV Home Assistant integration
 
-- Manual installation
+#### Manual installation
 Copy this folder to `config/custom_components/mypv/`.
 
-- HACS
+#### HACS
 * You need to install HACS. <a href="https://hacs.xyz/docs/setup/download/" target="_blank">Download HACS</a><br> (use the getHacs integration for that)
 * After that go to the 3 dots on HACS --> Custom Repositories --> paste the link of this repository --> select Integration as type --> click on Add
 After that it should be available on HACS --> Search my-PV --> Install my-PV
