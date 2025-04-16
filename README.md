@@ -16,9 +16,10 @@ There are 2 ways how to install thw my-PV Home Assistant integration
 Copy this folder to `config/custom_components/mypv/`.
 
 - HACS
-You need to install HACS. <a href="https://hacs.xyz/docs/setup/download/" target="_blank">Download HACS</a><br>
-After that go to the 3 dots on HACS --> Custom Repositories --> paste the link of this repository --> select Integration as type --> click on Add
-After that it should be available on HACS --> Search my-PV --> Install my-PV 
+* You need to install HACS. <a href="https://hacs.xyz/docs/setup/download/" target="_blank">Download HACS</a><br> (use the getHacs integration for that)
+* After that go to the 3 dots on HACS --> Custom Repositories --> paste the link of this repository --> select Integration as type --> click on Add
+After that it should be available on HACS --> Search my-PV --> Install my-PV
+* Finally: Go to Devices -> Add Integration -> Search my-PV --> Config flow starts to scan your network for my-PV devices.
 
 ### Configuration
 
