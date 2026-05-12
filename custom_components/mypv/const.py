@@ -207,6 +207,8 @@ SENSOR_TYPES = {
     "ps_upd_state": ["Power supply update state", None, "mdi:update", "data"],
     "p9s_upd_state": ["Acthor 9 Power supply update state", None, "mdi:update", "data"],
     "mainmode": ["Operating Mode", None, "", "setup"],
+    "maxpwr": ["Maximum Power", "%", "mdi:gauge", "setup"],
+    "ww1boost": ["Hot Water Assurance", UnitOfTemperature.CELSIUS, "mdi:thermometer", "setup"],
     "mode9s": ["Operating Mode Acthor 9", None, "", "setup"],
 }
 
