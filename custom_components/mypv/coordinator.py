@@ -8,7 +8,8 @@ from aiohttp import ClientTimeout
 
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN, WIFI_METER_NAME
 
@@ -35,30 +36,31 @@ class MYPVDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict:
         """Fetch data."""
-        try:
-            async with aiohttp.ClientSession() as session:
-                if self._info is None:
-                    self._info = await self.async_update_info(session)
-                    if self._info is None:
-                        raise Exception("Could not connect to your my-PV device")
+        # Re-use Home Assistant's shared aiohttp session instead of opening a
+        # new ClientSession on every refresh. A new session cannot re-use any
+        # connection, so at the default 10 second interval this opened a fresh
+        # TCP connection for every request against a small embedded web server.
+        session = async_get_clientsession(self.hass)
 
-                if self._data != "monitorjson":
-                    self._setup = await self.async_update_setup(session)
-                    if self._setup is None:
-                        raise Exception("Could not connect to your my-PV device")
+        if self._info is None:
+            self._info = await self.async_update_info(session)
+            if self._info is None:
+                raise UpdateFailed("Could not connect to your my-PV device")
 
-                data = await self.async_update_data(session)
-                if data is None:
-                    raise Exception("Could not connect to your my-PV device")
+        if self._data != "monitorjson":
+            self._setup = await self.async_update_setup(session)
+            if self._setup is None:
+                raise UpdateFailed("Could not connect to your my-PV device")
 
-                return {
-                    "data": data,
-                    "info": self._info,
-                    "setup": self._setup,
-                }
-        except Exception as e:
-            # _LOGGER.error(f"Error fetching data from the API: {e}")
-            return {}
+        data = await self.async_update_data(session)
+        if data is None:
+            raise UpdateFailed("Could not connect to your my-PV device")
+
+        return {
+            "data": data,
+            "info": self._info,
+            "setup": self._setup,
+        }
 
     async def async_update_info(self, session):
         try:
